@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ActivityLog;
 use App\Models\Branch;
 use App\Models\Department;
 use App\Models\Faculty;
@@ -16,6 +17,7 @@ use App\Support\Grade;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 /**
  * Fake demo data for development and presentation only.
@@ -35,6 +37,8 @@ class DemoSeeder extends Seeder
     private array $technologies = [];
     private User $ahmad;
     private User $mohammad;
+    private Project $project;
+    private array $rooms = [];
 
     public function run(): void
     {
@@ -46,6 +50,12 @@ class DemoSeeder extends Seeder
         $this->createSectionsAndStudents();
         $this->createTechnologies();
         $this->createDemoProject();
+        $this->createRooms();
+        $this->createMeetingsAndDefense();
+        $this->createNotifications();
+        $this->createActivityLog();
+
+        $this->call(ArchiveDemoSeeder::class);
     }
 
     private function createUniversityStructure(): void
@@ -265,7 +275,7 @@ class DemoSeeder extends Seeder
 
         $approvedAt = Carbon::parse('2026-03-10 11:00');
 
-        $project = Project::create([
+        $project = $this->project = Project::create([
             'team_id' => $team->id,
             'supervisor_id' => $hamza->id,
             'semester_id' => $this->semester->id,
@@ -325,6 +335,106 @@ class DemoSeeder extends Seeder
         ]);
     }
 
+    private function createRooms(): void
+    {
+        $rooms = [
+            ['قاعة 101', 'المبنى الرئيسي', 40, 'hebron'],
+            ['قاعة 102', 'المبنى الرئيسي', 30, 'hebron'],
+            ['مختبر الحاسوب 1', 'مبنى التكنولوجيا', 25, 'hebron'],
+            ['قاعة 201', 'المبنى الرئيسي', 35, 'ramallah'],
+            ['مختبر الحاسوب 2', 'مبنى التكنولوجيا', 25, 'ramallah'],
+            ['قاعة 301', 'المبنى الرئيسي', 30, 'nablus'],
+        ];
+
+        foreach ($rooms as [$name, $building, $capacity, $branchKey]) {
+            $this->rooms[] = $this->branches[$branchKey]->rooms()->create([
+                'name' => $name,
+                'building' => $building,
+                'capacity' => $capacity,
+            ]);
+        }
+    }
+
+    private function createMeetingsAndDefense(): void
+    {
+        $hamza = $this->supervisors[0];
+
+        // Upcoming items use dates relative to today, so dashboards always have something upcoming
+        $meetings = [
+            ['اجتماع متابعة التصميم', Carbon::parse('2026-03-17 12:00'), 'done'],
+            ['مراجعة نموذج الذكاء الاصطناعي', Carbon::parse('2026-04-14 12:00'), 'done'],
+            ['متابعة مرحلة التطوير', now()->addDays(3)->setTime(12, 0), 'confirmed'],
+        ];
+
+        foreach ($meetings as [$title, $startsAt, $status]) {
+            $this->project->meetings()->create([
+                'supervisor_id' => $hamza->id,
+                'title' => $title,
+                'starts_at' => $startsAt,
+                'ends_at' => $startsAt->copy()->addHour(),
+                'room_id' => $this->rooms[2]->id,
+                'status' => $status,
+            ]);
+        }
+
+        $defenseStart = now()->addWeeks(3)->setTime(10, 0);
+        $defense = $this->project->defenseSchedule()->create([
+            'room_id' => $this->rooms[0]->id,
+            'starts_at' => $defenseStart,
+            'ends_at' => $defenseStart->copy()->addHour(),
+            'status' => 'scheduled',
+            'created_by' => $this->coordinator->id,
+        ]);
+
+        $committee = User::where('role', 'committee')->orderBy('id')->take(3)->get();
+        foreach ($committee as $index => $member) {
+            $defense->committeeMembers()->create([
+                'user_id' => $member->id,
+                'role' => ['chair', 'member', 'examiner'][$index],
+            ]);
+        }
+    }
+
+    private function createNotifications(): void
+    {
+        $this->notify($this->ahmad, 'stage_approved', ['stage' => 'التصميم'], read: true);
+        $this->notify($this->ahmad, 'meeting_confirmed', ['title' => 'متابعة مرحلة التطوير']);
+        $this->notify($this->ahmad, 'defense_scheduled', ['room' => 'قاعة 101']);
+        $this->notify($this->supervisors[0], 'inquiry_received', ['student' => 'أحمد عيسى']);
+    }
+
+    private function notify(User $user, string $key, array $params, bool $read = false): void
+    {
+        // We store a translation key, not the text, so the message shows in the user's language
+        $user->notifications()->create([
+            'id' => (string) Str::uuid(),
+            'type' => 'demo',
+            'data' => ['key' => 'notifications.' . $key, 'params' => $params],
+            'read_at' => $read ? now() : null,
+        ]);
+    }
+
+    private function createActivityLog(): void
+    {
+        $entries = [
+            ['project_submitted', 'قدّم الفريق فكرة المشروع للمراجعة.', $this->ahmad, '2026-03-03 09:30'],
+            ['project_approved', 'اعتمد المشرف فكرة المشروع.', $this->supervisors[0], '2026-03-10 11:00'],
+            ['stage_completed', 'اكتملت مرحلة اعتماد الفكرة.', $this->supervisors[0], '2026-03-10 11:05'],
+            ['meeting_done', 'عُقد اجتماع متابعة التصميم.', $this->supervisors[0], '2026-03-17 13:00'],
+            ['stage_completed', 'اكتملت مرحلة التصميم.', $this->supervisors[0], '2026-03-31 10:00'],
+            ['stage_started', 'بدأت مرحلة التطوير والبرمجة.', $this->ahmad, '2026-04-01 09:00'],
+        ];
+
+        foreach ($entries as [$action, $description, $user, $date]) {
+            ActivityLog::forceCreate([
+                'project_id' => $this->project->id,
+                'user_id' => $user->id,
+                'action' => $action,
+                'description' => $description,
+                'created_at' => Carbon::parse($date),
+            ]);
+        }
+    }
     private function makeUser(array $data): User
     {
         return User::create(array_merge([
