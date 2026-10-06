@@ -30,4 +30,9 @@ class Team extends Model
     {
         return $this->hasOne(Project::class);
     }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(TeamMessage::class);
+    }
 }

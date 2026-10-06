@@ -66,6 +66,21 @@ class Project extends Model
         return $this->hasMany(Task::class)->orderBy('position');
     }
 
+    public function comments(): HasMany
+    {
+        return $this->hasMany(ProjectComment::class);
+    }
+
+    public function inquiries(): HasMany
+    {
+        return $this->hasMany(SupervisorInquiry::class);
+    }
+
+    public function meetings(): HasMany
+    {
+        return $this->hasMany(Meeting::class)->orderBy('starts_at');
+    }
+
     public function scopeForSupervisor(Builder $query, User|int $supervisor): void
     {
         $query->where('supervisor_id', $supervisor instanceof User ? $supervisor->id : $supervisor);
