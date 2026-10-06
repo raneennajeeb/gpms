@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Public\LocaleController;
+use App\Http\Controllers\Shared\ThemeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -10,6 +11,10 @@ Route::get('/', function () {
 Route::post('/locale/{locale}', [LocaleController::class, 'update'])
     ->whereIn('locale', config('app.supported_locales'))
     ->name('public.locale.update');
+
+Route::middleware('auth')->group(function () {
+    Route::put('/preferences/theme', [ThemeController::class, 'update'])->name('shared.theme.update');
+});
 
 // Temporary page to preview the design system (removed in part 3)
 Route::view('/design-test', 'design-test');
