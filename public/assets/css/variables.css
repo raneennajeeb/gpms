@@ -1,0 +1,108 @@
+/* GPMS design tokens. Every color, size and shadow in the system comes from here. */
+
+:root {
+    /* Brand */
+    --navy-900: #0F2747;
+    --navy-800: #163763;
+    --navy-700: #1E4785;
+    --blue-600: #2563EB;
+    --blue-700: #1D4ED8;
+
+    /* Page */
+    --color-bg: #F4F6FA;
+    --color-surface: #FFFFFF;
+    --color-surface-alt: #F8FAFC;
+    --color-border: #E2E8F0;
+    --color-text: #1E293B;
+    --color-text-muted: #64748B;
+    --color-heading: var(--navy-700);
+
+    /* Actions */
+    --color-primary: var(--blue-600);
+    --color-primary-hover: var(--blue-700);
+    --color-secondary: #E2E8F0;
+    --color-secondary-text: #334155;
+
+    /* Sidebar, hero and footer */
+    --color-sidebar-bg: var(--navy-800);
+    --color-sidebar-text: #E2E8F0;
+    --color-sidebar-active: rgba(255, 255, 255, 0.14);
+    --color-dark-section: var(--navy-900);
+
+    /* Tables */
+    --color-table-head-bg: var(--navy-700);
+    --color-table-head-text: #FFFFFF;
+    --color-table-stripe: #F8FAFC;
+
+    /* Status colors: green done, yellow waiting, red late, blue in progress, gray locked */
+    --status-success: #16A34A;
+    --status-success-bg: #DCFCE7;
+    --status-warning: #B45309;
+    --status-warning-bg: #FEF3C7;
+    --status-danger: #DC2626;
+    --status-danger-bg: #FEE2E2;
+    --status-info: #2563EB;
+    --status-info-bg: #DBEAFE;
+    --status-neutral: #64748B;
+    --status-neutral-bg: #F1F5F9;
+
+    /* Typography */
+    --font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.25rem;
+    --font-size-xl: 1.75rem;
+    --font-size-2xl: 2.25rem;
+
+    /* 8px spacing grid */
+    --space-1: 8px;
+    --space-2: 16px;
+    --space-3: 24px;
+    --space-4: 32px;
+    --space-5: 40px;
+    --space-6: 48px;
+
+    /* Shapes */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-pill: 999px;
+    --shadow-sm: 0 1px 3px rgba(15, 39, 71, 0.08);
+    --shadow-md: 0 4px 12px rgba(15, 39, 71, 0.10);
+}
+
+html[data-theme="dark"] {
+    --color-bg: #0B1424;
+    --color-surface: #111E33;
+    --color-surface-alt: #16253D;
+    --color-border: #24344F;
+    --color-text: #E2E8F0;
+    --color-text-muted: #94A3B8;
+    --color-heading: #E8EEF9;
+
+    --color-primary: #3B82F6;
+    --color-primary-hover: #2563EB;
+    --color-secondary: #24344F;
+    --color-secondary-text: #E2E8F0;
+
+    --color-sidebar-bg: #0A1A33;
+    --color-sidebar-text: #CBD5E1;
+    --color-sidebar-active: rgba(255, 255, 255, 0.10);
+    --color-dark-section: #08121F;
+
+    --color-table-head-bg: #1A2F52;
+    --color-table-stripe: #142238;
+
+    --status-success: #4ADE80;
+    --status-success-bg: rgba(22, 163, 74, 0.20);
+    --status-warning: #FBBF24;
+    --status-warning-bg: rgba(217, 119, 6, 0.20);
+    --status-danger: #F87171;
+    --status-danger-bg: rgba(220, 38, 38, 0.20);
+    --status-info: #60A5FA;
+    --status-info-bg: rgba(37, 99, 235, 0.20);
+    --status-neutral: #94A3B8;
+    --status-neutral-bg: rgba(148, 163, 184, 0.15);
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.40);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
