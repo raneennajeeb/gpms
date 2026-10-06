@@ -2,6 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     initThemeToggle();
+    initMobileNav();
 });
 
 function initThemeToggle() {
@@ -35,5 +36,19 @@ function saveTheme(theme, saveUrl) {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
         },
         body: JSON.stringify({ theme }),
+    });
+}
+
+function initMobileNav() {
+    const toggle = document.querySelector('[data-nav-toggle]');
+    const nav = document.getElementById('site-nav');
+
+    if (!toggle || !nav) {
+        return;
+    }
+
+    toggle.addEventListener('click', () => {
+        const isOpen = nav.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
     });
 }
