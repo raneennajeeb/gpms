@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
@@ -43,5 +44,22 @@ class Project extends Model
     public function technologies(): BelongsToMany
     {
         return $this->belongsToMany(Technology::class, 'project_technologies');
+    }
+
+    public function stages(): HasMany
+    {
+        return $this->hasMany(ProjectStage::class)->orderBy('sort_order');
+    }
+
+    /**
+     * نسبة الإنجاز = مجموع أوزان المراحل المكتملة
+     */
+    public function calculateProgress(): int
+    {
+        $percent = (int) $this->stages()->where('status', 'completed')->sum('weight');
+
+        $this->forceFill(['progress_percent' => $percent])->save();
+
+        return $percent;
     }
 }
