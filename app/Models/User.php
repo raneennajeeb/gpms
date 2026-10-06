@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -50,29 +51,24 @@ class User extends Authenticatable
         ];
     }
 
-    public function department(): BelongsTo
-    {
-        return $this->belongsTo(Department::class);
-    }
-
-    public function branch(): BelongsTo
-    {
-        return $this->belongsTo(Branch::class);
-    }
-
     public function section(): BelongsTo
     {
         return $this->belongsTo(Section::class);
     }
 
-    // Sections this user supervises (only meaningful for supervisors)
-    public function supervisedSections(): HasMany
+    public function scopeStudentsOfSection(Builder $query, Section|int $section): void
     {
-        return $this->hasMany(Section::class, 'supervisor_id');
+        $query->where('section_id', $section instanceof Section ? $section->id : $section)->where('role', 'student');
     }
 
-    public function scopeStudentsOfSection(Builder $query, int $sectionId): void
+    // الإضافات الجديدة
+    public function teamMemberships(): HasMany
     {
-        $query->where('role', 'student')->where('section_id', $sectionId);
+        return $this->hasMany(TeamMember::class);
+    }
+
+    public function supervisedProjects(): HasMany
+    {
+        return $this->hasMany(Project::class, 'supervisor_id');
     }
 }
