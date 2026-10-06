@@ -102,6 +102,11 @@ class Project extends Model
         return $this->hasMany(SimilarityResult::class);
     }
 
+    public function activities(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class)->latest('created_at');
+    }
+
     public function scopeForSupervisor(Builder $query, User|int $supervisor): void
     {
         $query->where('supervisor_id', $supervisor instanceof User ? $supervisor->id : $supervisor);
