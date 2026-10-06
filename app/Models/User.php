@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -15,23 +14,10 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'university_id',
-        'name',
-        'email',
-        'password',
-        'role',
-        'department_id',
-        'branch_id',
-        'section_id',
-        'phone',
-        'avatar',
-        'must_change_password',
-        'is_active',
-        'locale',
-        'theme',
-        'onboarding_done',
-        'is_demo',
-        'last_login_at',
+        'university_id', 'name', 'email', 'password', 'role',
+        'department_id', 'branch_id', 'section_id', 'phone', 'avatar',
+        'must_change_password', 'is_active', 'locale', 'theme',
+        'onboarding_done', 'is_demo', 'last_login_at',
     ];
 
     protected $hidden = [
@@ -51,17 +37,27 @@ class User extends Authenticatable
         ];
     }
 
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
     public function section(): BelongsTo
     {
         return $this->belongsTo(Section::class);
     }
 
-    public function scopeStudentsOfSection(Builder $query, Section|int $section): void
+    // Sections this user supervises (only meaningful for supervisors)
+    public function supervisedSections(): HasMany
     {
-        $query->where('section_id', $section instanceof Section ? $section->id : $section)->where('role', 'student');
+        return $this->hasMany(Section::class, 'supervisor_id');
     }
 
-    // الإضافات الجديدة
     public function teamMemberships(): HasMany
     {
         return $this->hasMany(TeamMember::class);
@@ -70,5 +66,10 @@ class User extends Authenticatable
     public function supervisedProjects(): HasMany
     {
         return $this->hasMany(Project::class, 'supervisor_id');
+    }
+
+    public function scopeStudentsOfSection(Builder $query, int $sectionId): void
+    {
+        $query->where('role', 'student')->where('section_id', $sectionId);
     }
 }

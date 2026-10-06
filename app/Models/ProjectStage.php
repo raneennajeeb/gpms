@@ -4,22 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProjectStage extends Model
 {
     protected $fillable = [
-        'project_id',
-        'stage_template_id',
-        'name_ar',
-        'name_en',
-        'description_ar',
-        'sort_order',
-        'weight',
-        'status',
-        'due_date',
-        'completed_at',
-        'approved_by',
-        'approved_at',
+        'project_id', 'stage_template_id', 'name_ar', 'name_en', 'description_ar',
+        'sort_order', 'weight', 'status', 'due_date', 'completed_at', 'approved_by', 'approved_at',
     ];
 
     protected function casts(): array
@@ -44,5 +35,10 @@ class ProjectStage extends Model
     public function approver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function submissions(): HasMany
+    {
+        return $this->hasMany(Submission::class);
     }
 }

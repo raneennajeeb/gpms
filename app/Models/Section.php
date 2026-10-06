@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
 
 class Section extends Model
 {
@@ -33,10 +32,9 @@ class Section extends Model
 
     public function students(): HasMany
     {
-        return $this->hasMany(User::class, 'section_id');
+        return $this->hasMany(User::class)->where('role', 'student');
     }
 
-    
     public function teams(): HasMany
     {
         return $this->hasMany(Team::class);

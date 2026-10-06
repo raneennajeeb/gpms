@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -9,7 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
-    protected $fillable = ['team_id', 'supervisor_id', 'semester_id', 'title', 'description', 'keywords', 'submitted_at'];
+    protected $fillable = [
+        'team_id', 'supervisor_id', 'semester_id', 'idea_id',
+        'title', 'description', 'category', 'keywords',
+        'status', 'github_url', 'submitted_at',
+    ];
 
     protected function casts(): array
     {
@@ -49,6 +54,21 @@ class Project extends Model
     public function stages(): HasMany
     {
         return $this->hasMany(ProjectStage::class)->orderBy('sort_order');
+    }
+
+    public function submissions(): HasMany
+    {
+        return $this->hasMany(Submission::class);
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class)->orderBy('position');
+    }
+
+    public function scopeForSupervisor(Builder $query, User|int $supervisor): void
+    {
+        $query->where('supervisor_id', $supervisor instanceof User ? $supervisor->id : $supervisor);
     }
 
     /**

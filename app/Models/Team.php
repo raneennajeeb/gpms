@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Team extends Model
 {
-    protected $fillable = ['section_id', 'leader_id', 'status'];
+    protected $fillable = ['section_id', 'leader_id', 'name', 'status'];
 
     public function section(): BelongsTo
     {
