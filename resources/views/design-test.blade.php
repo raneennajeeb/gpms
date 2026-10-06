@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="{{ request('theme') === 'dark' ? 'dark' : 'light' }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" data-theme="{{ request('theme') === 'dark' ? 'dark' : 'light' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,12 +14,17 @@
 </head>
 <body>
     <main class="container" style="padding-block: var(--space-4);">
-        <h1>نظام إدارة مشاريع التخرج</h1>
-        <p class="text-muted">GPMS - Graduation Project Management System</p>
+        <h1>{{ __('common.app_name') }}</h1>
+        <p class="text-muted">{{ __('common.app_name_en') }}</p>
+
+        <form method="POST" action="{{ route('public.locale.update', app()->getLocale() === 'ar' ? 'en' : 'ar') }}">
+            @csrf
+            <button type="submit">{{ __('common.switch_language') }}</button>
+        </form>
 
         <p>
-            <a href="?theme=light">الوضع الفاتح</a> |
-            <a href="?theme=dark">الوضع الليلي</a>
+            <a href="?theme=light">{{ __('common.theme_light') }}</a> |
+            <a href="?theme=dark">{{ __('common.theme_dark') }}</a>
         </p>
 
         <div class="box">
