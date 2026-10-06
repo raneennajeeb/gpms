@@ -24,4 +24,9 @@ class Room extends Model
     {
         return $this->hasMany(Meeting::class);
     }
+
+    public function defenseSchedules(): HasMany
+    {
+        return $this->hasMany(DefenseSchedule::class);
+    }
 }

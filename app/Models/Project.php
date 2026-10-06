@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Project extends Model
 {
@@ -79,6 +80,21 @@ class Project extends Model
     public function meetings(): HasMany
     {
         return $this->hasMany(Meeting::class)->orderBy('starts_at');
+    }
+
+    public function defenseSchedule(): HasOne
+    {
+        return $this->hasOne(DefenseSchedule::class);
+    }
+
+    public function evaluations(): HasMany
+    {
+        return $this->hasMany(Evaluation::class);
+    }
+
+    public function supervisorEvaluation(): HasOne
+    {
+        return $this->hasOne(SupervisorEvaluation::class);
     }
 
     public function scopeForSupervisor(Builder $query, User|int $supervisor): void
