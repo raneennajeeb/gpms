@@ -97,6 +97,11 @@ class Project extends Model
         return $this->hasOne(SupervisorEvaluation::class);
     }
 
+    public function similarityResults(): HasMany
+    {
+        return $this->hasMany(SimilarityResult::class);
+    }
+
     public function scopeForSupervisor(Builder $query, User|int $supervisor): void
     {
         $query->where('supervisor_id', $supervisor instanceof User ? $supervisor->id : $supervisor);

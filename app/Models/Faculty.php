@@ -24,4 +24,9 @@ class Faculty extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function archiveEntries(): HasMany
+    {
+        return $this->hasMany(ArchiveEntry::class);
+    }
 }
