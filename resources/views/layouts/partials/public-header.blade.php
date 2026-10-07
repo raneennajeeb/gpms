@@ -46,7 +46,7 @@
                 </span>
             @else
                 <a href="{{ Route::has('login') ? route('login') : '#' }}" class="btn btn-primary">
-                    <x-icon name="log-in" />
+                    <x-icon name="log-in" class="icon-flip-rtl" />
                     <span>{{ __('nav.login') }}</span>
                 </a>
             @endauth

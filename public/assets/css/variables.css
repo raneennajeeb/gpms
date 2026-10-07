@@ -22,6 +22,10 @@
     --color-primary-hover: var(--blue-700);
     --color-secondary: #E2E8F0;
     --color-secondary-text: #334155;
+    --color-success-solid: #16A34A;
+    --color-success-solid-hover: #15803D;
+    --color-danger-solid: #DC2626;
+    --color-danger-solid-hover: #B91C1C;
 
     /* Sidebar, hero and footer */
     --color-sidebar-bg: var(--navy-800);
