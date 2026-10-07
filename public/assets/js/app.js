@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initThemeToggle();
     initMobileNav();
     initModals();
+    initPasswordToggles();
     initFlashToasts();
     // Order matters: confirm forms must register before the double-submit guard
     initConfirmForms();
@@ -189,3 +190,21 @@ window.addEventListener('pageshow', (event) => {
         });
     }
 });
+
+/* ---------- Password show/hide ---------- */
+
+function initPasswordToggles() {
+    document.querySelectorAll('[data-password-toggle]').forEach((button) => {
+        const input = document.getElementById(button.dataset.passwordToggle);
+
+        if (!input) {
+            return;
+        }
+
+        button.addEventListener('click', () => {
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            button.classList.toggle('is-shown', show);
+        });
+    });
+}

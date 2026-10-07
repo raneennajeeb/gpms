@@ -1,7 +1,3 @@
-@php
-    $otherLocale = app()->getLocale() === 'ar' ? 'en' : 'ar';
-@endphp
-
 <header class="site-header">
     <div class="container site-header__inner">
         <a href="{{ route('public.home') }}" class="site-header__brand">
@@ -24,28 +20,22 @@
                 <span class="visually-hidden">{{ __('common.search') }}</span>
             </a>
 
-            <form method="POST" action="{{ route('public.locale.update', $otherLocale) }}">
-                @csrf
-                <button type="submit" class="btn-icon btn-icon--text">
-                    <x-icon name="globe" />
-                    <span>{{ __('common.switch_language') }}</span>
-                </button>
-            </form>
-
-            <button type="button" class="btn-icon" data-theme-toggle title="{{ __('common.toggle_theme') }}"
-                @auth data-save-url="{{ route('shared.theme.update') }}" @endauth>
-                <x-icon name="moon" class="icon-when-light" />
-                <x-icon name="sun" class="icon-when-dark" />
-                <span class="visually-hidden">{{ __('common.toggle_theme') }}</span>
-            </button>
+            @include('layouts.partials.preferences')
 
             @auth
                 <span class="site-header__user">
                     <x-icon name="user" />
                     {{ auth()->user()->name }}
                 </span>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn-icon" title="{{ __('auth.logout') }}">
+                        <x-icon name="log-out" class="icon-flip-rtl" />
+                        <span class="visually-hidden">{{ __('auth.logout') }}</span>
+                    </button>
+                </form>
             @else
-                <a href="{{ Route::has('login') ? route('login') : '#' }}" class="btn btn-primary">
+                <a href="{{ route('login') }}" class="btn btn-primary">
                     <x-icon name="log-in" class="icon-flip-rtl" />
                     <span>{{ __('nav.login') }}</span>
                 </a>

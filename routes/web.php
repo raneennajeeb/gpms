@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Public\LocaleController;
 use App\Http\Controllers\Shared\ThemeController;
 use Illuminate\Support\Facades\Route;
@@ -10,7 +11,13 @@ Route::post('/locale/{locale}', [LocaleController::class, 'update'])
     ->whereIn('locale', config('app.supported_locales'))
     ->name('public.locale.update');
 
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'create'])->name('login');
+    Route::post('/login', [LoginController::class, 'store'])->name('login.store');
+});
+
 Route::middleware('auth')->group(function () {
+    Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
     Route::put('/preferences/theme', [ThemeController::class, 'update'])->name('shared.theme.update');
 });
 

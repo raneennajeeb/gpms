@@ -466,3 +466,74 @@ html[data-theme="dark"] .icon-when-dark {
         transform: none;
     }
 }
+
+/* Full-width button */
+.btn-block {
+    width: 100%;
+}
+
+/* Alert box */
+.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-1);
+    margin-bottom: var(--space-2);
+    padding: 12px var(--space-2);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+}
+
+.alert svg {
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+.alert--danger { color: var(--status-danger); background: var(--status-danger-bg); }
+.alert--success { color: var(--status-success); background: var(--status-success-bg); }
+.alert--info { color: var(--status-info); background: var(--status-info-bg); }
+
+/* Password input with show/hide button */
+.password-input {
+    position: relative;
+}
+
+.password-input .form-field__input {
+    padding-inline-end: 44px;
+}
+
+.password-input__toggle {
+    position: absolute;
+    top: 50%;
+    inset-inline-end: 6px;
+    display: inline-flex;
+    padding: 6px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+.password-input__toggle .icon-when-shown,
+.password-input__toggle.is-shown .icon-when-hidden {
+    display: none;
+}
+
+.password-input__toggle.is-shown .icon-when-shown {
+    display: inline;
+}
+
+/* Checkbox */
+.checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.checkbox input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-primary);
+}
