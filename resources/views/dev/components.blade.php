@@ -69,5 +69,24 @@
             <x-button icon="plus">تقديم فكرة</x-button>
         </x-empty-state>
     </x-card>
+    <x-card title="التفاعل">
+        <div class="dev-row">
+            <x-button variant="secondary" data-modal-open="demo-modal">فتح نافذة</x-button>
+            <x-button variant="success" onclick="showToast('تم الحفظ بنجاح', 'success')">رسالة نجاح</x-button>
+            <x-button variant="danger" onclick="showToast('حدث خطأ، حاول مرة أخرى', 'danger')">رسالة خطأ</x-button>
+            <x-button variant="secondary" href="{{ url('/dev/flash') }}">رسالة من السيرفر</x-button>
+            <form method="GET" action="{{ url('/dev/components') }}" data-confirm="هل أنت متأكد من حذف هذا المشروع؟">
+                <x-button type="submit" variant="danger" icon="trash-2">حذف مع تأكيد</x-button>
+            </form>
+        </div>
+    </x-card>
+
+    <x-modal id="demo-modal" title="نافذة تجريبية">
+        <p>هذا محتوى النافذة. اضغطي Esc أو خارج النافذة لإغلاقها.</p>
+        <x-slot:footer>
+            <x-button variant="secondary" data-modal-close>إغلاق</x-button>
+            <x-button>حفظ</x-button>
+        </x-slot:footer>
+    </x-modal>
 </div>
 @endsection

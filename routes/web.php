@@ -14,7 +14,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/preferences/theme', [ThemeController::class, 'update'])->name('shared.theme.update');
 });
 
-// Developer-only preview of the UI components (never available in production)
+// Developer-only pages (never available in production)
 if (app()->isLocal()) {
     Route::view('/dev/components', 'dev.components');
+    Route::get('/dev/flash', fn () => redirect('/dev/components')->with('success', 'رسالة نجاح جاية من السيرفر'));
 }

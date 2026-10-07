@@ -11,5 +11,8 @@
     </main>
 
     @include('layouts.partials.public-footer')
+
+    <x-toast />
+    <x-confirm-dialog />
 </body>
 </html>

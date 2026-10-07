@@ -14,4 +14,7 @@ return [
     'open_menu' => 'Open menu',
     'quick_links' => 'Quick links',
     'footer_about' => 'A complete system for managing graduation projects at Al-Quds Open University, from team forming to defense and archiving.',
+    'close' => 'Close',
+    'cancel' => 'Cancel',
+    'confirm' => 'Confirm',
 ];
