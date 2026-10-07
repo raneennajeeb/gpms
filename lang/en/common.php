@@ -17,4 +17,7 @@ return [
     'close' => 'Close',
     'cancel' => 'Cancel',
     'confirm' => 'Confirm',
+    'search_placeholder' => 'Search for a project or student...',
+    'close_menu' => 'Close menu',
+    'user_menu' => 'User menu',
 ];

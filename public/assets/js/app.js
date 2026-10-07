@@ -3,6 +3,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     initThemeToggle();
     initMobileNav();
+    initSidebar();
+    initDropdowns();
     initModals();
     initPasswordToggles();
     initFlashToasts();
@@ -205,6 +207,49 @@ function initPasswordToggles() {
             const show = input.type === 'password';
             input.type = show ? 'text' : 'password';
             button.classList.toggle('is-shown', show);
+        });
+    });
+}
+
+/* ---------- Sidebar drawer (small screens) ---------- */
+
+function initSidebar() {
+    if (!document.getElementById('sidebar')) {
+        return;
+    }
+
+    const open = () => document.body.classList.add('sidebar-open');
+    const close = () => document.body.classList.remove('sidebar-open');
+
+    document.querySelectorAll('[data-sidebar-open]').forEach((button) => button.addEventListener('click', open));
+    document.querySelectorAll('[data-sidebar-close]').forEach((element) => element.addEventListener('click', close));
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            close();
+        }
+    });
+}
+
+/* ---------- Dropdowns (user menu) ---------- */
+
+function initDropdowns() {
+    document.querySelectorAll('[data-dropdown-toggle]').forEach((button) => {
+        const menu = button.nextElementSibling;
+
+        button.addEventListener('click', (event) => {
+            // Stop the click from reaching the document listener below, which would close it again
+            event.stopPropagation();
+            const isOpen = menu.classList.toggle('is-open');
+            button.setAttribute('aria-expanded', isOpen);
+        });
+    });
+
+    // A click anywhere else closes any open dropdown
+    document.addEventListener('click', () => {
+        document.querySelectorAll('[data-dropdown].is-open').forEach((menu) => {
+            menu.classList.remove('is-open');
+            menu.previousElementSibling?.setAttribute('aria-expanded', 'false');
         });
     });
 }

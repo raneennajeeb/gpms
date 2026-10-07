@@ -17,4 +17,7 @@ return [
     'close' => 'إغلاق',
     'cancel' => 'إلغاء',
     'confirm' => 'تأكيد',
+    'search_placeholder' => 'ابحث عن مشروع أو طالب...',
+    'close_menu' => 'إغلاق القائمة',
+    'user_menu' => 'قائمة المستخدم',
 ];

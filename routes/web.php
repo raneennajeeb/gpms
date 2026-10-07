@@ -17,6 +17,11 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    // TEMPORARY dashboards so the app layout can be seen; the real ones come with their own steps
+    foreach (['student', 'supervisor', 'coordinator', 'committee'] as $role) {
+        Route::view("/{$role}/dashboard", 'shared.dashboard-placeholder')->name("{$role}.dashboard");
+    }
+
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
     Route::put('/preferences/theme', [ThemeController::class, 'update'])->name('shared.theme.update');
 });
