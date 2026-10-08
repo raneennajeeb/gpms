@@ -40,4 +40,17 @@ return [
     'rule_numbers' => 'Contains numbers',
     'save_password' => 'Save password',
     'password_changed' => 'Your password has been changed.',
+    // Forgot / reset password
+    'forgot_title' => 'Forgot your password',
+    'forgot_subtitle' => 'Enter your university ID and we will send a reset link to your university email.',
+    'send_link' => 'Send reset link',
+    'reset_link_sent' => 'If this ID is registered, a reset link has been sent to your university email.',
+    'back_to_login' => 'Back to log in',
+    'reset_title' => 'Reset your password',
+    'reset_subtitle' => 'Choose a new password for your account.',
+    'reset_button' => 'Save new password',
+    'password_reset_done' => 'Your password has been changed. You can log in now.',
+    'reset_invalid_title' => 'Invalid link',
+    'reset_invalid_text' => 'This reset link is wrong or has expired. Links are valid for 60 minutes only.',
+    'request_new_link' => 'Request a new link',
 ];

@@ -6,6 +6,10 @@
     <h1 class="auth__title">{{ __('auth.login_title') }}</h1>
     <p class="auth__subtitle">{{ __('auth.login_subtitle') }}</p>
 
+    @if (session('status'))
+        <x-alert type="success" icon="info">{{ session('status') }}</x-alert>
+    @endif
+
     @if (session('login_notice'))
         <x-alert type="info" icon="info">{{ session('login_notice') }}</x-alert>
     @endif

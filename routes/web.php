@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\ChangePasswordController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Public\LocaleController;
 use App\Http\Controllers\Shared\ThemeController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +21,16 @@ Route::post('/locale/{locale}', [LocaleController::class, 'update'])
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
     Route::post('/login', [LoginController::class, 'store'])->name('login.store');
+
+    Route::get('/password/forgot', [ForgotPasswordController::class, 'create'])->name('password.request');
+    Route::post('/password/forgot', [ForgotPasswordController::class, 'store'])
+        ->middleware('throttle:5,1')
+        ->name('password.email');
+
+    Route::get('/password/reset/{token}', [ResetPasswordController::class, 'create'])->name('password.reset');
+    Route::post('/password/reset', [ResetPasswordController::class, 'store'])
+        ->middleware('throttle:5,1')
+        ->name('password.update');
 });
 
 /* ---------- Logged-in users ---------- */
@@ -53,4 +65,5 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
 if (app()->isLocal()) {
     Route::view('/dev/components', 'dev.components');
     Route::get('/dev/flash', fn () => redirect('/dev/components')->with('success', 'رسالة نجاح جاية من السيرفر'));
+    Route::get('/dev/error/{code}', fn (int $code) => abort($code))->whereIn('code', ['403', '404', '419', '429', '500']);
 }
