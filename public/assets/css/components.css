@@ -537,3 +537,50 @@ html[data-theme="dark"] .icon-when-dark {
     height: 16px;
     accent-color: var(--color-primary);
 }
+
+/* Password strength meter */
+.password-strength {
+    margin: calc(var(--space-1) * -1) 0 var(--space-2);
+}
+
+.password-strength .progress-bar {
+    height: 6px;
+    margin-bottom: var(--space-1);
+}
+
+.password-rules {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.password-rules li::before {
+    content: '○';
+    margin-inline-end: 6px;
+}
+
+.password-rules li.is-met {
+    color: var(--status-success);
+}
+
+.password-rules li.is-met::before {
+    content: '✓';
+}
+
+/* A button that looks like a link */
+.link-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-primary);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.link-button:hover {
+    text-decoration: underline;
+}

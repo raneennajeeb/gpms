@@ -25,6 +25,23 @@ class AuditLog extends Model
         ];
     }
 
+    /**
+     * TEMPORARY: part 5b is expected to define this helper.
+     * Writes one audit row for the current user and the thing that changed.
+     */
+    public static function record(string $action, ?Model $auditable = null, array $old = [], array $new = []): self
+    {
+        return static::create([
+            'user_id' => auth()->id(),
+            'action' => $action,
+            'auditable_type' => $auditable ? $auditable::class : null,
+            'auditable_id' => $auditable?->getKey(),
+            'old_values' => $old ?: null,
+            'new_values' => $new ?: null,
+            'ip_address' => request()->ip(),
+        ]);
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

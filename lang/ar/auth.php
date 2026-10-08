@@ -24,4 +24,20 @@ return [
     'wrong_password' => 'كلمة المرور غير صحيحة.',
 
     'logout' => 'تسجيل الخروج',
+
+    // Guests on protected pages
+    'login_required' => 'يرجى تسجيل الدخول للمتابعة.',
+
+    // Change password
+    'change_password_title' => 'تغيير كلمة المرور',
+    'change_password_subtitle' => 'اختر كلمة مرور قوية لا تستخدمها في مكان آخر.',
+    'change_password_required' => 'لحماية حسابك، يجب تغيير كلمة المرور المؤقتة قبل المتابعة.',
+    'current_password' => 'كلمة المرور الحالية',
+    'new_password' => 'كلمة المرور الجديدة',
+    'confirm_password' => 'تأكيد كلمة المرور الجديدة',
+    'rule_length' => '8 خانات على الأقل',
+    'rule_letters' => 'تحتوي على حروف',
+    'rule_numbers' => 'تحتوي على أرقام',
+    'save_password' => 'حفظ كلمة المرور',
+    'password_changed' => 'تم تغيير كلمة المرور بنجاح.',
 ];

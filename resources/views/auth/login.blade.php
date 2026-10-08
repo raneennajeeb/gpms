@@ -6,6 +6,10 @@
     <h1 class="auth__title">{{ __('auth.login_title') }}</h1>
     <p class="auth__subtitle">{{ __('auth.login_subtitle') }}</p>
 
+    @if (session('login_notice'))
+        <x-alert type="info" icon="info">{{ session('login_notice') }}</x-alert>
+    @endif
+
     @if (session('login_alert'))
         <x-alert>{{ session('login_alert') }}</x-alert>
     @endif
@@ -16,17 +20,7 @@
         <x-form-field name="university_id" :label="__('auth.university_id')" :hint="__('auth.university_id_hint')"
                       inputmode="numeric" pattern="[0-9]*" autocomplete="username" autofocus required />
 
-        <x-form-field name="password" :label="__('auth.password_label')">
-            <div class="password-input">
-                <input type="password" id="password" name="password" autocomplete="current-password" required
-                       class="form-field__input {{ $errors->has('password') ? 'is-invalid' : '' }}">
-                <button type="button" class="password-input__toggle" data-password-toggle="password"
-                        aria-label="{{ __('auth.show_password') }}">
-                    <x-icon name="eye" class="icon-when-hidden" />
-                    <x-icon name="eye-off" class="icon-when-shown" />
-                </button>
-            </div>
-        </x-form-field>
+        <x-password-input name="password" :label="__('auth.password_label')" required />
 
         <div class="auth__row">
             <label class="checkbox">

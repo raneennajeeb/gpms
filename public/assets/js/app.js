@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initDropdowns();
     initModals();
     initPasswordToggles();
+    initPasswordStrength();
     initFlashToasts();
     // Order matters: confirm forms must register before the double-submit guard
     initConfirmForms();
@@ -251,5 +252,42 @@ function initDropdowns() {
             menu.classList.remove('is-open');
             menu.previousElementSibling?.setAttribute('aria-expanded', 'false');
         });
+    });
+}
+
+/* ---------- Password strength (helper only; the server does the real check) ---------- */
+
+function initPasswordStrength() {
+    const input = document.querySelector('[data-password-strength-input]');
+    const box = document.querySelector('[data-password-strength]');
+
+    if (!input || !box) {
+        return;
+    }
+
+    const bar = box.querySelector('[data-strength-bar]');
+    const colors = ['fill-danger', 'fill-danger', 'fill-warning', 'fill-info', 'fill-success'];
+
+    input.addEventListener('input', () => {
+        const value = input.value;
+        const rules = {
+            length: value.length >= 8,
+            letters: /\p{L}/u.test(value),
+            numbers: /\d/.test(value),
+        };
+
+        let score = Object.values(rules).filter(Boolean).length;
+
+        // Bonus point for a long password or one with symbols
+        if (score === 3 && (value.length >= 12 || /[^\p{L}\d]/u.test(value))) {
+            score = 4;
+        }
+
+        box.querySelectorAll('[data-rule]').forEach((item) => {
+            item.classList.toggle('is-met', rules[item.dataset.rule]);
+        });
+
+        bar.className = 'progress-bar__fill ' + colors[score];
+        bar.style.width = (score * 25) + '%';
     });
 }

@@ -24,4 +24,20 @@ return [
     'wrong_password' => 'The password is incorrect.',
 
     'logout' => 'Log out',
+
+    // Guests on protected pages
+    'login_required' => 'Please log in to continue.',
+
+    // Change password
+    'change_password_title' => 'Change password',
+    'change_password_subtitle' => 'Choose a strong password you don\'t use anywhere else.',
+    'change_password_required' => 'To protect your account, you must change your temporary password before continuing.',
+    'current_password' => 'Current password',
+    'new_password' => 'New password',
+    'confirm_password' => 'Confirm new password',
+    'rule_length' => 'At least 8 characters',
+    'rule_letters' => 'Contains letters',
+    'rule_numbers' => 'Contains numbers',
+    'save_password' => 'Save password',
+    'password_changed' => 'Your password has been changed.',
 ];

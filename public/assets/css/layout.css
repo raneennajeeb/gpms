@@ -787,3 +787,62 @@ html[data-theme="dark"] {
         display: none;
     }
 }
+
+.auth__secondary {
+    margin-top: var(--space-2);
+    text-align: center;
+}
+
+/* Error pages */
+.error-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: var(--space-3);
+}
+
+.error-page__card {
+    max-width: 480px;
+    padding: var(--space-5) var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+}
+
+.error-page__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--status-danger-bg);
+    color: var(--status-danger);
+}
+
+.error-page__code {
+    margin: var(--space-2) 0 0;
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--color-heading);
+}
+
+.error-page__title {
+    margin: var(--space-1) 0;
+}
+
+.error-page__text {
+    color: var(--color-text-muted);
+}
+
+.error-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-1);
+    margin-top: var(--space-3);
+}
