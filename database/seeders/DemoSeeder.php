@@ -208,7 +208,7 @@ class DemoSeeder extends Seeder
         ];
 
         // The two students from the design come first, then 38 generated ones
-        $names = ['أحمد عيسى', 'محمد خالد'];
+        $names = ['رنين محمد', 'محمد خالد'];
         for ($i = 0; count($names) < 40; $i++) {
             $names[] = $firstNames[$i % count($firstNames)] . ' ' . $lastNames[($i * 3) % count($lastNames)];
         }
@@ -400,7 +400,7 @@ class DemoSeeder extends Seeder
         $this->notify($this->ahmad, 'stage_approved', ['stage' => 'التصميم'], read: true);
         $this->notify($this->ahmad, 'meeting_confirmed', ['title' => 'متابعة مرحلة التطوير']);
         $this->notify($this->ahmad, 'defense_scheduled', ['room' => 'قاعة 101']);
-        $this->notify($this->supervisors[0], 'inquiry_received', ['student' => 'أحمد عيسى']);
+        $this->notify($this->supervisors[0], 'inquiry_received', ['student' => 'رنين محمد']);
     }
 
     private function notify(User $user, string $key, array $params, bool $read = false): void
