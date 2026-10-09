@@ -6,12 +6,20 @@
     <div class="container">
         <x-breadcrumb :items="[
             ['label' => __('nav.home'), 'url' => route('public.home')],
-            ['label' => __('nav.archive')],
+            ['label' => __('nav.archive'), 'url' => route('public.archive.index')],
             ['label' => $faculty->localizedName()],
         ]" />
 
         <x-page-header :title="$faculty->localizedName()"
                        :subtitle="__('archive.faculty_projects', ['count' => $entries->total()])" />
+
+        @if ($faculty->departments->isNotEmpty())
+            <div class="tag-list">
+                @foreach ($faculty->departments as $department)
+                    <x-tag>{{ $department->localizedName() }}</x-tag>
+                @endforeach
+            </div>
+        @endif
 
         @if ($entries->isEmpty())
             <x-card>

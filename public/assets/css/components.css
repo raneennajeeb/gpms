@@ -714,3 +714,105 @@ html[data-theme="dark"] .icon-when-dark {
     align-self: center;
     padding: 0 4px;
 }
+
+/* Archive landing page */
+.archive-section {
+    margin-bottom: var(--space-5);
+}
+
+.archive-section__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+}
+
+.archive-section__title {
+    margin: 0 0 var(--space-2);
+    font-size: var(--font-size-xl);
+}
+
+.archive-section__head .archive-section__title {
+    margin: 0;
+}
+
+.faculty-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-2);
+}
+
+.faculty-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-top: 4px solid var(--faculty-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    color: var(--color-text);
+    transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.faculty-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.faculty-card__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-md);
+    background: var(--faculty-color);
+    color: #FFFFFF;
+}
+
+.faculty-card__name {
+    font-size: var(--font-size-lg);
+    font-weight: 800;
+    color: var(--color-heading);
+    line-height: 1.4;
+}
+
+.faculty-card__stats {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: auto;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.faculty-card__stats strong {
+    display: block;
+    font-size: var(--font-size-lg);
+    color: var(--color-text);
+}
+
+/* Horizontal row of cards that scrolls sideways */
+.archive-row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(280px, 300px);
+    gap: var(--space-2);
+    overflow-x: auto;
+    padding-bottom: var(--space-1);
+    scroll-snap-type: x mandatory;
+}
+
+.archive-row > * {
+    scroll-snap-align: start;
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: var(--space-3);
+}

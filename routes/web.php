@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'public.home')->name('public.home');
 
+Route::get('/archive', [ArchiveController::class, 'index'])->name('public.archive.index');
 Route::get('/archive/faculty/{faculty}', [ArchiveController::class, 'faculty'])->name('public.archive.faculty');
 
 Route::post('/locale/{locale}', [LocaleController::class, 'update'])
