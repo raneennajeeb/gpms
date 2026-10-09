@@ -97,4 +97,19 @@ class ArchiveEntry extends Model
     {
         return Grade::label($this->grade, $locale);
     }
+
+    // Everything the archive card shows, loaded in one go to avoid N+1 queries
+    public function scopeWithCardData(Builder $query): void
+    {
+        $query->with(['faculty', 'branch', 'students', 'committee']);
+    }
+
+    public function gradeColor(): string
+    {
+        return match ($this->grade) {
+            'excellent' => 'success',
+            'very_good' => 'info',
+            default => 'warning',
+        };
+    }
 }

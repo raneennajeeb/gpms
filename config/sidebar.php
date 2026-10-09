@@ -30,5 +30,5 @@ return [
 
     // Everyone
     ['key' => 'calendar', 'route' => 'shared.calendar', 'icon' => 'calendar', 'roles' => ['student', 'supervisor', 'coordinator', 'committee']],
-    ['key' => 'archive', 'route' => 'public.archive', 'icon' => 'archive', 'roles' => ['student', 'supervisor', 'coordinator', 'committee']],
+    ['key' => 'archive', 'route' => 'public.archive.index', 'icon' => 'archive', 'roles' => ['student', 'supervisor', 'coordinator', 'committee']],
 ];

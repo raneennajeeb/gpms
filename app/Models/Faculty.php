@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasLocalizedName;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Faculty extends Model
 {
+    use HasLocalizedName;
+
     protected $fillable = ['name_ar', 'name_en', 'icon', 'color', 'created_by', 'is_featured'];
 
     protected function casts(): array

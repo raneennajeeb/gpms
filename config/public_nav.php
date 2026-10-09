@@ -4,6 +4,6 @@
 return [
     'home' => 'public.home',
     'about' => 'public.about',
-    'archive' => 'public.archive',
-    'help' => 'public.help',
+    'archive' => 'public.archive.index',
+    'help' => 'public.guide',
 ];

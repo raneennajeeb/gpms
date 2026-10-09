@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasLocalizedName;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Branch extends Model
 {
+    use HasLocalizedName;
+
     protected $fillable = ['name_ar', 'name_en'];
 
     public function sections(): HasMany

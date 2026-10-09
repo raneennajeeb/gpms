@@ -15,7 +15,7 @@
         </nav>
 
         <div class="site-header__actions">
-            <a href="{{ Route::has('public.archive') ? route('public.archive') : '#' }}" class="btn-icon" title="{{ __('common.search') }}">
+            <a href="{{ Route::has('public.archive.index') ? route('public.archive.index') : '#' }}" class="btn-icon" title="{{ __('common.search') }}">
                 <x-icon name="search" />
                 <span class="visually-hidden">{{ __('common.search') }}</span>
             </a>

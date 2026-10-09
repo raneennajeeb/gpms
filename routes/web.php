@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Public\ArchiveController;
 use App\Http\Controllers\Public\LocaleController;
 use App\Http\Controllers\Shared\ThemeController;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Route;
 /* ---------- Public ---------- */
 
 Route::view('/', 'public.home')->name('public.home');
+
+Route::get('/archive/faculty/{faculty}', [ArchiveController::class, 'faculty'])->name('public.archive.faculty');
 
 Route::post('/locale/{locale}', [LocaleController::class, 'update'])
     ->whereIn('locale', config('app.supported_locales'))
