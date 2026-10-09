@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SettingsSeeder::class,
             StageTemplatesSeeder::class,
+            UniversityStructureSeeder::class,
             DemoSeeder::class,
         ]);
     }

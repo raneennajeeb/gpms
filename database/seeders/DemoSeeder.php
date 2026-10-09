@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\ActivityLog;
 use App\Models\Branch;
 use App\Models\Department;
-use App\Models\Faculty;
 use App\Models\Project;
 use App\Models\Section;
 use App\Models\Semester;
@@ -29,7 +28,6 @@ class DemoSeeder extends Seeder
     private string $password;
     private Semester $semester;
     private array $branches = [];
-    private array $faculties = [];
     private Department $itDepartment;
     private User $coordinator;
     private array $supervisors = [];
@@ -77,64 +75,8 @@ class DemoSeeder extends Seeder
             $this->branches[$key] = Branch::create(['name_ar' => $ar, 'name_en' => $en]);
         }
 
-        $faculties = [
-            'tech' => [
-                'name_ar' => 'كلية التكنولوجيا والعلوم التطبيقية',
-                'name_en' => 'Faculty of Technology and Applied Sciences',
-                'icon' => 'cpu',
-                'color' => '#1E3A8A',
-                'is_featured' => true,
-                'departments' => [
-                    ['تكنولوجيا المعلومات والاتصالات', 'Information and Communication Technology'],
-                    ['علم الحاسوب', 'Computer Science'],
-                ],
-            ],
-            'admin' => [
-                'name_ar' => 'كلية العلوم الإدارية والاقتصادية',
-                'name_en' => 'Faculty of Administrative and Economic Sciences',
-                'icon' => 'briefcase',
-                'color' => '#047857',
-                'is_featured' => false,
-                'departments' => [
-                    ['إدارة الأعمال', 'Business Administration'],
-                    ['المحاسبة', 'Accounting'],
-                ],
-            ],
-            'education' => [
-                'name_ar' => 'كلية العلوم التربوية',
-                'name_en' => 'Faculty of Educational Sciences',
-                'icon' => 'book',
-                'color' => '#B45309',
-                'is_featured' => false,
-                'departments' => [
-                    ['التعليم الأساسي', 'Elementary Education'],
-                ],
-            ],
-            'social' => [
-                'name_ar' => 'كلية التنمية الاجتماعية والأسرية',
-                'name_en' => 'Faculty of Social and Family Development',
-                'icon' => 'users',
-                'color' => '#7C3AED',
-                'is_featured' => false,
-                'departments' => [
-                    ['الخدمة الاجتماعية', 'Social Work'],
-                ],
-            ],
-        ];
-
-        foreach ($faculties as $key => $data) {
-            $departments = $data['departments'];
-            unset($data['departments']);
-
-            $faculty = Faculty::create($data);
-            $this->faculties[$key] = $faculty;
-
-            foreach ($departments as [$ar, $en]) {
-                $faculty->departments()->create(['name_ar' => $ar, 'name_en' => $en]);
-            }
-        }
-
-        $this->itDepartment = $this->faculties['tech']->departments()->first();
+        // Faculties and departments come from UniversityStructureSeeder (real data)
+        $this->itDepartment = Department::where('name_en', 'Information and Communication Technology')->firstOrFail();
     }
 
     private function createStaff(): void

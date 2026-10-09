@@ -74,8 +74,9 @@ class ArchiveDemoSeeder extends Seeder
             $faculty = $faculties[$facultyKey];
             $branchKey = $branchKeys[$i % 3];
             $halls = self::HALLS[$branchKey];
-            // Tech projects alternate between the two tech departments
-            $department = $faculty->departments()->skip($i % $faculty->departments()->count())->first();
+            // Spread demo projects over the first two departments of each faculty
+            $departments = $faculty->departments()->orderBy('id')->take(2)->get();
+            $department = $departments[$i % $departments->count()];
 
             $entry = ArchiveEntry::create([
                 'faculty_id' => $faculty->id,
