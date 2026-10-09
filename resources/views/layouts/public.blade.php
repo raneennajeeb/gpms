@@ -6,7 +6,7 @@
 <body>
     @include('layouts.partials.public-header')
 
-    <main class="public-main">
+    <main class="public-main @yield('main_class')">
         @yield('content')
     </main>
 

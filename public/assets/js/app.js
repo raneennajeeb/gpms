@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initModals();
     initPasswordToggles();
     initPasswordStrength();
+    initCountUp();
     initFlashToasts();
     // Order matters: confirm forms must register before the double-submit guard
     initConfirmForms();
@@ -290,4 +291,45 @@ function initPasswordStrength() {
         bar.className = 'progress-bar__fill ' + colors[score];
         bar.style.width = (score * 25) + '%';
     });
+}
+
+/* ---------- Count-up numbers (home statistics) ---------- */
+
+function initCountUp() {
+    const items = document.querySelectorAll('[data-count-up]');
+
+    // Users who asked for less motion just see the final numbers
+    if (!items.length || !('IntersectionObserver' in window)
+        || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                animateCount(entry.target);
+                observer.unobserve(entry.target); // count only once
+            }
+        });
+    }, { threshold: 0.5 });
+
+    items.forEach((item) => observer.observe(item));
+}
+
+function animateCount(element) {
+    const target = Number(element.dataset.countUp);
+    const suffix = element.dataset.suffix || '';
+    const duration = 1200;
+    const start = performance.now();
+
+    const step = (now) => {
+        const progress = Math.min((now - start) / duration, 1);
+        element.textContent = Math.round(target * progress) + suffix;
+
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        }
+    };
+
+    requestAnimationFrame(step);
 }

@@ -5,13 +5,14 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Public\ArchiveController;
+use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\LocaleController;
 use App\Http\Controllers\Shared\ThemeController;
 use Illuminate\Support\Facades\Route;
 
 /* ---------- Public ---------- */
 
-Route::view('/', 'public.home')->name('public.home');
+Route::get('/', HomeController::class)->name('public.home');
 
 Route::get('/archive', [ArchiveController::class, 'index'])->name('public.archive.index');
 Route::get('/archive/faculty/{faculty}', [ArchiveController::class, 'faculty'])->name('public.archive.faculty');
