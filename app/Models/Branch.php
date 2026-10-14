@@ -10,7 +10,7 @@ class Branch extends Model
 {
     use HasLocalizedName;
 
-    protected $fillable = ['name_ar', 'name_en'];
+    protected $fillable = ['code', 'name_ar', 'name_en'];
 
     public function sections(): HasMany
     {

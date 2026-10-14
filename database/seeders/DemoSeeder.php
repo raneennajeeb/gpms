@@ -65,14 +65,15 @@ class DemoSeeder extends Seeder
             'is_current' => true,
         ]);
 
+        // Branches come from BranchesSeeder (the real 18); the demo only uses three of them
         $branches = [
-            'hebron' => ['الخليل', 'Hebron'],
-            'ramallah' => ['رام الله والبيرة', 'Ramallah & Al-Bireh'],
-            'nablus' => ['نابلس', 'Nablus'],
+            'hebron' => '01500',
+            'ramallah' => '01300',
+            'nablus' => '01200',
         ];
 
-        foreach ($branches as $key => [$ar, $en]) {
-            $this->branches[$key] = Branch::create(['name_ar' => $ar, 'name_en' => $en]);
+        foreach ($branches as $key => $code) {
+            $this->branches[$key] = Branch::where('code', $code)->firstOrFail();
         }
 
         // Faculties and departments come from UniversityStructureSeeder (real data)
@@ -162,7 +163,9 @@ class DemoSeeder extends Seeder
                 default => '405',
             };
             $section = $this->sections[$number];
-            $universityId = '0120' . str_pad($index + 1, 4, '0', STR_PAD_LEFT);
+
+            // A university ID starts with the code of the student's own branch
+            $universityId = $section->branch->code . str_pad($index + 1, 3, '0', STR_PAD_LEFT);
 
             $student = $this->makeUser([
                 'university_id' => $universityId,

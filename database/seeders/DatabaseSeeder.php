@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             SettingsSeeder::class,
             StageTemplatesSeeder::class,
             UniversityStructureSeeder::class,
+            BranchesSeeder::class,
             DemoSeeder::class,
         ]);
     }

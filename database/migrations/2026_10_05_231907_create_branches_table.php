@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('branches', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 5)->unique(); // Official branch code, e.g. 01500 for Hebron
             $table->string('name_ar');
             $table->string('name_en');
             $table->timestamps();
