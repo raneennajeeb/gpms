@@ -45,6 +45,12 @@
                 <dt><x-icon name="map-pin" :size="16" /> {{ __('archive.hall') }}</dt>
                 <dd>{{ $entry->hall_name }}</dd>
             </div>
+            @if ($entry->competition && $entry->competition_name)
+                <div>
+                    <dt><x-icon name="trophy" :size="16" /> {{ __('archive.competition_name') }}</dt>
+                    <dd>{{ $entry->competition_name }}{{ $entry->competition_result ? ' — ' . $entry->competition_result : '' }}</dd>
+                </div>
+            @endif
             @if ($entry->branch)
                 <div>
                     <dt><x-icon name="building" :size="16" /> {{ __('archive.branch') }}</dt>

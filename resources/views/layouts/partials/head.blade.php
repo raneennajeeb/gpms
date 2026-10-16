@@ -18,4 +18,8 @@
 <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/layout.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/print.css') }}">
+
+{{-- Page-specific scripts go before app.js, which reads them on DOMContentLoaded --}}
+@stack('scripts')
 <script src="{{ asset('assets/js/app.js') }}" defer></script>

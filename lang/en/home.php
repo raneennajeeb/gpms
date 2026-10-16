@@ -54,7 +54,7 @@ return [
             'points' => ['Review and approve ideas', 'Follow stages and submissions', 'Add outstanding projects to the archive'],
         ],
         'department' => [
-            'title' => 'Department',
+            'title' => 'Coordinator',
             'points' => ['Schedule defenses and halls', 'Import students and sections', 'Reports and audit log'],
         ],
         'committee' => [

@@ -1,0 +1,115 @@
+/* The archive card is the only thing that prints. The browser's own
+   "Save as PDF" does the export, so no PDF library is needed. */
+
+.print-card {
+    display: none;
+}
+
+@media print {
+    @page {
+        size: A4;
+        margin: 18mm 16mm;
+    }
+
+    /* Everything that is screen furniture goes away */
+    .site-header,
+    .site-footer,
+    .breadcrumb,
+    .entry__actions,
+    .entry__side,
+    .archive-section,
+    .toast-container,
+    dialog {
+        display: none !important;
+    }
+
+    .entry,
+    .container {
+        all: unset;
+    }
+
+    html,
+    body {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+        font-size: 11pt;
+    }
+
+    .print-card {
+        display: block;
+        max-width: 100%;
+    }
+
+    .print-card__head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 10px;
+        margin-bottom: 18px;
+        border-bottom: 2px solid #000000;
+    }
+
+    .print-card__head div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .print-card__head strong {
+        font-size: 13pt;
+    }
+
+    .print-card__head span {
+        font-size: 10pt;
+    }
+
+    .print-card h1 {
+        font-size: 18pt;
+        margin: 0 0 8px;
+    }
+
+    .print-card__lead {
+        margin: 0 0 16px;
+        font-size: 11pt;
+    }
+
+    .print-card__meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 20px;
+        margin: 0 0 16px;
+    }
+
+    .print-card__meta dt {
+        font-size: 9pt;
+        color: #444444;
+    }
+
+    .print-card__meta dd {
+        margin: 0;
+        font-size: 11pt;
+    }
+
+    .print-card__tech,
+    .print-card__desc {
+        margin: 0 0 12px;
+    }
+
+    .print-card__foot {
+        margin-top: 24px;
+        padding-top: 8px;
+        border-top: 1px solid #999999;
+        font-size: 8pt;
+        color: #555555;
+        direction: ltr;
+        text-align: start;
+    }
+
+    /* Never break the card across two pages if it fits on one */
+    .print-card {
+        break-inside: avoid;
+    }
+
+    a[href]::after {
+        content: none !important;
+    }
+}

@@ -6,6 +6,16 @@
     <div class="container">
         <x-page-header :title="__('archive.title')" :subtitle="__('archive.subtitle')" />
 
+        {{-- Search runs inside the featured faculty, which is where the projects are --}}
+        <form method="GET" action="{{ route('public.archive.faculty', $faculties->firstWhere('is_featured', true) ?? $faculties->first()) }}"
+              class="filters filters--standalone">
+            <div class="filters__search">
+                <label class="sr-only" for="archive-q">{{ __('archive.search') }}</label>
+                <input type="search" id="archive-q" name="q" placeholder="{{ __('archive.search_placeholder') }}">
+                <button type="submit" class="btn btn-primary">{{ __('archive.search') }}</button>
+            </div>
+        </form>
+
         <section class="archive-section">
             <h2 class="archive-section__title">{{ __('archive.faculties') }}</h2>
 

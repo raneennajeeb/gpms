@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initPasswordToggles();
     initPasswordStrength();
     initCountUp();
+    initQrCode();
+    initShareButton();
+    initPrintButton();
     initFlashToasts();
     // Order matters: confirm forms must register before the double-submit guard
     initConfirmForms();
@@ -332,4 +335,42 @@ function animateCount(element) {
     };
 
     requestAnimationFrame(step);
+}
+
+/* ---------- Archive entry: QR code, share, print ---------- */
+
+function initQrCode() {
+    const holder = document.getElementById('qr');
+
+    // qrcode.min.js (qrcode-generator, MIT) is only loaded on the entry page
+    if (!holder || typeof qrcode === 'undefined') {
+        return;
+    }
+
+    // Type 0 lets the library pick the smallest size that fits the URL
+    const qr = qrcode(0, 'M');
+    qr.addData(holder.dataset.qr);
+    qr.make();
+
+    holder.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+}
+
+function initShareButton() {
+    document.querySelectorAll('[data-share]').forEach((button) => {
+        button.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                showToast(button.dataset.copied, 'success');
+            } catch (error) {
+                // Blocked clipboard, or an insecure origin
+                showToast(button.dataset.failed, 'error');
+            }
+        });
+    });
+}
+
+function initPrintButton() {
+    document.querySelectorAll('[data-print]').forEach((button) => {
+        button.addEventListener('click', () => window.print());
+    });
 }

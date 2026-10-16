@@ -21,9 +21,15 @@
             </div>
         @endif
 
+        @include('public.archive.partials.filters')
+
         @if ($entries->isEmpty())
             <x-card>
-                <x-empty-state icon="archive" :title="__('archive.empty_title')" :text="__('archive.empty_text')" />
+                <x-empty-state icon="archive"
+                               :title="request()->hasAny(['q', 'year', 'branch', 'grade', 'technology', 'competition'])
+                                   ? __('archive.no_results_title') : __('archive.empty_title')"
+                               :text="request()->hasAny(['q', 'year', 'branch', 'grade', 'technology', 'competition'])
+                                   ? __('archive.no_results_text') : __('archive.empty_text')" />
             </x-card>
         @else
             <div class="archive-grid">

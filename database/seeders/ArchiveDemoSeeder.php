@@ -84,7 +84,9 @@ class ArchiveDemoSeeder extends Seeder
                 'branch_id' => $branches[$branchKey]->id,
                 'created_by' => $creator->id,
                 'title' => $title,
-                'description' => $this->buildDescription($goal, $techs, $facultyKey),
+                // The idea in one line; the description then says how and why
+                'idea_summary' => $goal,
+                'description' => $this->buildDescription($techs, $facultyKey),
                 'year' => $year,
                 'supervisor_name' => self::SUPERVISOR_NAMES[$i % count(self::SUPERVISOR_NAMES)],
                 'defense_date' => Carbon::create($year, 6, 10 + ($i % 15)),
@@ -110,16 +112,19 @@ class ArchiveDemoSeeder extends Seeder
             foreach ($techs as $techName) {
                 $entry->technologies()->attach(Technology::firstOrCreate(['name' => $techName])->id);
             }
+
+            // Student names and technologies are searchable too, so fold them in
+            $entry->refreshSearchText();
         }
     }
 
-    private function buildDescription(string $goal, array $techs, string $facultyKey): string
+    private function buildDescription(array $techs, string $facultyKey): string
     {
         $methods = $techs
             ? 'اعتمد الفريق في تنفيذه على ' . implode('، ', $techs) . '.'
             : 'اعتمد الفريق على المنهج الوصفي والزيارات الميدانية.';
 
-        return $goal . ' ' . $methods . ' ' . self::CLOSING_SENTENCES[$facultyKey];
+        return $methods . ' ' . self::CLOSING_SENTENCES[$facultyKey];
     }
 
     private function scoreFor(string $grade, int $i): float

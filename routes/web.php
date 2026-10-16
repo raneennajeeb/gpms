@@ -14,8 +14,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('public.home');
 
+Route::view('/about', 'public.about')->name('public.about');
+Route::view('/guide', 'public.guide')->name('public.guide');
+
 Route::get('/archive', [ArchiveController::class, 'index'])->name('public.archive.index');
+// Before /archive/project/{entry}, so "competitions" is never read as an entry
+Route::get('/archive/competitions', [ArchiveController::class, 'competitions'])->name('public.archive.competitions');
 Route::get('/archive/faculty/{faculty}', [ArchiveController::class, 'faculty'])->name('public.archive.faculty');
+Route::get('/archive/project/{entry}', [ArchiveController::class, 'show'])->name('public.archive.show');
 
 Route::post('/locale/{locale}', [LocaleController::class, 'update'])
     ->whereIn('locale', config('app.supported_locales'))
@@ -42,6 +48,9 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['auth', 'password.changed'])->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+
+    Route::post('/archive/project/{entry}/favorite', [ArchiveController::class, 'toggleFavorite'])
+        ->name('public.archive.favorite');
     Route::put('/preferences/theme', [ThemeController::class, 'update'])->name('shared.theme.update');
 
     Route::get('/password/change', [ChangePasswordController::class, 'edit'])->name('password.change');
