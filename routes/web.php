@@ -60,9 +60,7 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
         Route::view('/dashboard', 'shared.dashboard-placeholder')->name('dashboard');
     });
 
-    Route::middleware('role:committee')->prefix('committee')->name('committee.')->group(function () {
-        Route::view('/dashboard', 'shared.dashboard-placeholder')->name('dashboard');
-    });
+    // No committee role: a supervisor sits on a committee through a defense session
 });
 
 /* ---------- Developer-only pages (never available in production) ---------- */

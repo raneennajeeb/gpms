@@ -87,6 +87,8 @@ class DemoSeeder extends Seeder
             'name' => 'أ. سامر نصار',
             'email' => 'coordinator@qou.edu',
             'role' => 'coordinator',
+            // The coordinator manages this faculty across all its branches
+            'faculty_id' => $this->itDepartment->faculty_id,
         ]);
 
         $supervisors = [
@@ -106,19 +108,21 @@ class DemoSeeder extends Seeder
             ]);
         }
 
-        $committee = [
+        // Sitting on a committee is not a role: these are supervisors too,
+        // assigned to a defense session when the coordinator schedules it
+        $moreSupervisors = [
             ['900201', 'د. لينا حمدان', 'lina.hamdan@qou.edu'],
             ['900202', 'د. ماهر قاسم', 'maher.qasem@qou.edu'],
             ['900203', 'د. هبة زيدان', 'heba.zaidan@qou.edu'],
             ['900204', 'د. نضال الأحمد', 'nidal.alahmad@qou.edu'],
         ];
 
-        foreach ($committee as [$id, $name, $email]) {
-            $this->makeUser([
+        foreach ($moreSupervisors as [$id, $name, $email]) {
+            $this->supervisors[] = $this->makeUser([
                 'university_id' => $id,
                 'name' => $name,
                 'email' => $email,
-                'role' => 'committee',
+                'role' => 'supervisor',
             ]);
         }
     }
@@ -331,7 +335,13 @@ class DemoSeeder extends Seeder
             'created_by' => $this->coordinator->id,
         ]);
 
-        $committee = User::where('role', 'committee')->orderBy('id')->take(3)->get();
+        // A supervisor never sits on the committee of their own student's project
+        $committee = User::where('role', 'supervisor')
+            ->whereKeyNot($this->project->supervisor_id)
+            ->orderByDesc('id')
+            ->take(3)
+            ->get();
+
         foreach ($committee as $index => $member) {
             $defense->committeeMembers()->create([
                 'user_id' => $member->id,

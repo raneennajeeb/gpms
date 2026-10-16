@@ -14,10 +14,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['student', 'supervisor', 'coordinator', 'committee'])->index();
-            
-            // Foreign keys for these three are added later, after their tables exist
+            $table->enum('role', ['student', 'supervisor', 'coordinator'])->index();
+
+            // Foreign keys for these four are added later, after their tables exist
             $table->unsignedBigInteger('department_id')->nullable();
+            // Only the coordinator has one: the faculty whose branches they manage
+            $table->unsignedBigInteger('faculty_id')->nullable();
             $table->unsignedBigInteger('branch_id')->nullable();
             $table->unsignedBigInteger('section_id')->nullable()->index();
             

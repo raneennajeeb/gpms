@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->foreign('department_id')->references('id')->on('departments')->nullOnDelete();
+            $table->foreign('faculty_id')->references('id')->on('faculties')->nullOnDelete();
             $table->foreign('branch_id')->references('id')->on('branches')->nullOnDelete();
             $table->foreign('section_id')->references('id')->on('sections')->nullOnDelete();
         });
@@ -19,6 +20,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['department_id']);
+            $table->dropForeign(['faculty_id']);
             $table->dropForeign(['branch_id']);
             $table->dropForeign(['section_id']);
         });

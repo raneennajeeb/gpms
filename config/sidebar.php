@@ -4,7 +4,7 @@
 // ":role" in a route name is replaced by the user's role, so one entry serves every dashboard.
 // Routes that don't exist yet (built in steps 03-07) show as "#" until they are added.
 return [
-    ['key' => 'dashboard', 'route' => ':role.dashboard', 'icon' => 'layout-dashboard', 'roles' => ['student', 'supervisor', 'coordinator', 'committee']],
+    ['key' => 'dashboard', 'route' => ':role.dashboard', 'icon' => 'layout-dashboard', 'roles' => ['student', 'supervisor', 'coordinator']],
 
     // Student
     ['key' => 'my_project', 'route' => 'student.project', 'icon' => 'folder', 'roles' => ['student']],
@@ -26,9 +26,8 @@ return [
     ['key' => 'settings', 'route' => 'coordinator.settings', 'icon' => 'settings', 'roles' => ['coordinator']],
 
     // Committee
-    ['key' => 'my_defenses', 'route' => 'committee.defenses', 'icon' => 'scale', 'roles' => ['committee']],
 
     // Everyone
-    ['key' => 'calendar', 'route' => 'shared.calendar', 'icon' => 'calendar', 'roles' => ['student', 'supervisor', 'coordinator', 'committee']],
-    ['key' => 'archive', 'route' => 'public.archive.index', 'icon' => 'archive', 'roles' => ['student', 'supervisor', 'coordinator', 'committee']],
+    ['key' => 'calendar', 'route' => 'shared.calendar', 'icon' => 'calendar', 'roles' => ['student', 'supervisor', 'coordinator']],
+    ['key' => 'archive', 'route' => 'public.archive.index', 'icon' => 'archive', 'roles' => ['student', 'supervisor', 'coordinator']],
 ];

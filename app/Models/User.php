@@ -16,7 +16,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'university_id', 'name', 'email', 'password', 'role',
-        'department_id', 'branch_id', 'section_id', 'phone', 'avatar',
+        'department_id', 'faculty_id', 'branch_id', 'section_id', 'phone', 'avatar',
         'must_change_password', 'is_active', 'locale', 'theme',
         'onboarding_done', 'is_demo', 'last_login_at',
     ];
@@ -41,6 +41,12 @@ class User extends Authenticatable
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
+    }
+
+    // Only the coordinator has one: the faculty whose branches they manage
+    public function faculty(): BelongsTo
+    {
+        return $this->belongsTo(Faculty::class);
     }
 
     public function branch(): BelongsTo

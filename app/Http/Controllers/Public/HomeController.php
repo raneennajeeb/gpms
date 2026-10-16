@@ -33,7 +33,7 @@ class HomeController extends Controller
 
         return [
             'archived' => ArchiveEntry::count(),
-            'staff' => User::whereIn('role', ['supervisor', 'committee'])->count(),
+            'staff' => User::where('role', 'supervisor')->count(),
             'completion' => $total > 0 ? (int) round($finished / $total * 100) : 0,
             'active' => (clone $currentProjects)->whereIn('status', ['approved', 'in_progress', 'awaiting_submission'])->count(),
         ];
