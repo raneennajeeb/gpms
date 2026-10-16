@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initTagInputs();
     initDashboardRefresh();
     initSimilarityCheck();
+    initKanban();
+    initTeamChat();
+    initTour();
     initFlashToasts();
     // Order matters: confirm forms must register before the double-submit guard
     initConfirmForms();
@@ -600,4 +603,229 @@ function initSimilarityCheck() {
             })
             .finally(() => form.submit());
     });
+}
+
+/* ---------- Kanban board: drag a card to another column ---------- */
+
+function initKanban() {
+    const board = document.querySelector('[data-kanban]');
+
+    if (!board) {
+        return;
+    }
+
+    let dragged = null;
+
+    board.addEventListener('dragstart', (event) => {
+        dragged = event.target.closest('[data-task]');
+
+        if (dragged) {
+            dragged.classList.add('task--dragging');
+            event.dataTransfer.effectAllowed = 'move';
+        }
+    });
+
+    board.addEventListener('dragend', () => {
+        dragged?.classList.remove('task--dragging');
+        dragged = null;
+    });
+
+    board.querySelectorAll('[data-drop]').forEach((list) => {
+        list.addEventListener('dragover', (event) => {
+            if (!dragged) {
+                return;
+            }
+
+            event.preventDefault(); // without this the drop never fires
+            list.classList.add('kanban__list--over');
+
+            const after = cardAfter(list, event.clientY);
+
+            if (after) {
+                list.insertBefore(dragged, after);
+            } else {
+                list.appendChild(dragged);
+            }
+        });
+
+        list.addEventListener('dragleave', () => list.classList.remove('kanban__list--over'));
+
+        list.addEventListener('drop', (event) => {
+            event.preventDefault();
+            list.classList.remove('kanban__list--over');
+            saveBoard(board);
+        });
+    });
+
+    // Which card should the dragged one go above, based on the pointer
+    function cardAfter(list, y) {
+        const cards = [...list.querySelectorAll('[data-task]:not(.task--dragging)')];
+
+        return cards.find((card) => {
+            const box = card.getBoundingClientRect();
+
+            return y < box.top + box.height / 2;
+        });
+    }
+}
+
+function saveBoard(board) {
+    const tasks = [];
+
+    board.querySelectorAll('[data-status]').forEach((column) => {
+        column.querySelectorAll('[data-task]').forEach((card, index) => {
+            tasks.push({
+                id: Number(card.dataset.task),
+                status: column.dataset.status,
+                position: index,
+            });
+        });
+    });
+
+    fetch(board.dataset.url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ?? '',
+        },
+        body: JSON.stringify({ tasks }),
+    }).catch(() => {
+        // The move stays on screen; a reload shows the saved order
+    });
+
+    board.querySelectorAll('.kanban__count').forEach((count) => {
+        count.textContent = count.closest('[data-status]').querySelectorAll('[data-task]').length;
+    });
+}
+
+/* ---------- Team channel: check for new messages every ten seconds ---------- */
+
+function initTeamChat() {
+    const chat = document.querySelector('[data-chat]');
+
+    if (!chat) {
+        return;
+    }
+
+    chat.scrollTop = chat.scrollHeight;
+
+    const poll = async () => {
+        try {
+            const response = await fetch(chat.dataset.url + '?after=' + chat.dataset.last, {
+                headers: { Accept: 'application/json' },
+            });
+
+            if (!response.ok) {
+                return;
+            }
+
+            const data = await response.json();
+
+            data.messages.forEach((message) => {
+                chat.querySelector('[data-chat-empty]')?.remove();
+
+                const row = document.createElement('div');
+                row.className = 'chat__row' + (message.mine ? ' chat__row--mine' : '');
+
+                const who = document.createElement('span');
+                who.className = 'chat__who';
+                who.textContent = message.name;
+                row.appendChild(who);
+
+                const body = document.createElement('p');
+                body.className = 'chat__body';
+                body.textContent = message.body; // textContent, never innerHTML
+                row.appendChild(body);
+
+                const at = document.createElement('small');
+                at.className = 'chat__at';
+                at.textContent = message.at;
+                row.appendChild(at);
+
+                chat.appendChild(row);
+                chat.dataset.last = message.id;
+            });
+
+            if (data.messages.length) {
+                chat.scrollTop = chat.scrollHeight;
+            }
+        } catch (error) {
+            // A dropped poll is harmless: the next one picks the messages up
+        }
+    };
+
+    setInterval(poll, 10000);
+}
+
+/* ---------- One-time welcome tour ---------- */
+
+function initTour() {
+    const data = document.getElementById('tour-data');
+
+    if (!data) {
+        return;
+    }
+
+    const steps = JSON.parse(data.textContent);
+    const labels = JSON.parse(data.dataset.labels);
+    let index = 0;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'tour';
+    overlay.innerHTML = '<div class="tour__box" role="dialog" aria-modal="true">'
+        + '<h2 class="tour__title"></h2><p class="tour__text"></p>'
+        + '<div class="tour__actions">'
+        + '<button type="button" class="btn btn-secondary btn-sm" data-tour-skip></button>'
+        + '<button type="button" class="btn btn-primary btn-sm" data-tour-next></button>'
+        + '</div><span class="tour__dots"></span></div>';
+
+    document.body.appendChild(overlay);
+
+    const title = overlay.querySelector('.tour__title');
+    const text = overlay.querySelector('.tour__text');
+    const next = overlay.querySelector('[data-tour-next]');
+    const skip = overlay.querySelector('[data-tour-skip]');
+    const dots = overlay.querySelector('.tour__dots');
+
+    skip.textContent = labels.skip;
+
+    const show = () => {
+        const step = steps[index];
+        title.textContent = step.title;
+        text.textContent = step.text;
+        next.textContent = index === steps.length - 1 ? labels.done : labels.next;
+        dots.textContent = (index + 1) + ' / ' + steps.length;
+
+        // Highlight the part of the page this step is about
+        document.querySelectorAll('.tour-target').forEach((el) => el.classList.remove('tour-target'));
+        document.querySelector(step.target)?.classList.add('tour-target');
+    };
+
+    const finish = () => {
+        overlay.remove();
+        document.querySelectorAll('.tour-target').forEach((el) => el.classList.remove('tour-target'));
+
+        fetch(data.dataset.url, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ?? '',
+            },
+        }).catch(() => {});
+    };
+
+    next.addEventListener('click', () => {
+        index += 1;
+
+        if (index >= steps.length) {
+            finish();
+        } else {
+            show();
+        }
+    });
+
+    skip.addEventListener('click', finish);
+
+    show();
 }

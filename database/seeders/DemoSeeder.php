@@ -53,6 +53,7 @@ class DemoSeeder extends Seeder
         $this->createDemoProject();
         $this->createRooms();
         $this->createMeetingsAndDefense();
+        $this->createStudentWorkspace();
         $this->createNotifications();
         $this->createActivityLog();
 
@@ -455,6 +456,82 @@ class DemoSeeder extends Seeder
         }
     }
 
+    /** Submissions, tasks, team messages and one answered inquiry */
+    private function createStudentWorkspace(): void
+    {
+        $project = $this->project;
+        $hamza = $this->supervisors[0];
+
+        // One submission per stage that has started
+        $submissions = [
+            ['التصميم', 'وثيقة التصميم التفصيلي', 'report', '-20 days', 'accepted'],
+            ['التطوير والبرمجة', 'التقرير المرحلي الأول', 'report', '+6 days', 'pending'],
+            ['التطوير والبرمجة', 'الكود المصدري - الإصدار الأولي', 'source_code', '+20 days', 'pending'],
+        ];
+
+        foreach ($submissions as [$stageName, $title, $type, $due, $status]) {
+            $stage = $project->stages()->where('name_ar', $stageName)->first();
+
+            $project->submissions()->create([
+                'project_stage_id' => $stage?->id,
+                'title' => $title,
+                'type' => $type,
+                'due_date' => Carbon::parse($due),
+                'status' => $status,
+                'supervisor_notes' => $status === 'accepted' ? 'عمل منظم، تابعوا على نفس المستوى.' : null,
+            ]);
+        }
+
+        $tasks = [
+            ['تصميم قاعدة البيانات', 'done', 0, '-15 days'],
+            ['واجهة تسجيل الدخول', 'done', 1, '-10 days'],
+            ['ربط نموذج الذكاء الاصطناعي', 'doing', 0, '+4 days'],
+            ['شاشة تقارير المزارع', 'doing', 1, '+9 days'],
+            ['اختبارات الوحدة', 'todo', 0, '+15 days'],
+            ['كتابة دليل المستخدم', 'todo', 1, null],
+        ];
+
+        $members = $project->team->members()->where('status', 'accepted')->pluck('user_id')->all();
+
+        foreach ($tasks as $index => [$title, $status, $position, $due]) {
+            $project->tasks()->create([
+                'title' => $title,
+                'assigned_to' => $members[$index % count($members)],
+                'status' => $status,
+                'position' => $position,
+                'due_date' => $due ? Carbon::parse($due) : null,
+            ]);
+        }
+
+        $messages = [
+            [$this->ahmad, 'خلصت تصميم قاعدة البيانات، رفعتها على الدرايف.'],
+            [$this->mohammad, 'تمام، بشتغل على ربط النموذج اليوم.'],
+            [$this->ahmad, 'ما تنسى نجهز التقرير المرحلي قبل الموعد.'],
+        ];
+
+        foreach ($messages as [$user, $body]) {
+            $project->team->messages()->create(['user_id' => $user->id, 'body' => $body]);
+        }
+
+        // A note from the supervisor to the whole team, and a personal reply
+        $project->comments()->create([
+            'user_id' => $hamza->id,
+            'kind' => 'team_note',
+            'body' => 'انتبهوا لتوثيق مصادر البيانات في الفصل الثالث، وراجعوا صيغة المراجع.',
+        ]);
+
+        $inquiry = $project->inquiries()->create([
+            'student_id' => $this->ahmad->id,
+            'supervisor_id' => $hamza->id,
+            'type' => 'documentation_inquiry',
+            'message' => 'دكتور، هل نعتمد صيغة APA في المراجع أم الصيغة المعتمدة في دليل الكلية؟',
+            'status' => 'replied',
+            'reply' => 'اعتمدوا صيغة APA، وسأرفع لكم نموذجاً جاهزاً.',
+            'replied_at' => now()->subDay(),
+        ]);
+
+        $this->notify($this->ahmad, 'inquiry_replied', ['supervisor' => $hamza->name]);
+    }
     private function createNotifications(): void
     {
         $this->notify($this->ahmad, 'stage_approved', ['stage' => 'التصميم'], read: true);

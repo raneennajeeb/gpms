@@ -10,4 +10,6 @@ return [
     'meeting_confirmed' => 'تم تأكيد اجتماع ":title"',
     'defense_scheduled' => 'تم تحديد موعد مناقشتك في :room',
     'inquiry_received' => 'استفسار جديد من :student',
+    'inquiry_replied' => 'رد :supervisor على استفسارك',
+    'meeting_requested' => 'طلب :student موعد اجتماع',
 ];

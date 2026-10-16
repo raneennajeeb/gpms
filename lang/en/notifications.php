@@ -10,4 +10,6 @@ return [
     'meeting_confirmed' => 'Meeting ":title" was confirmed',
     'defense_scheduled' => 'Your defense was scheduled in :room',
     'inquiry_received' => 'A new inquiry from :student',
+    'inquiry_replied' => ':supervisor replied to your inquiry',
+    'meeting_requested' => ':student requested a meeting',
 ];

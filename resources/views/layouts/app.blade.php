@@ -21,5 +21,24 @@
 
     <x-toast />
     <x-confirm-dialog />
+
+    {{-- The welcome tour runs once, then users.onboarding_done is set --}}
+    @auth
+        @if (auth()->user()->role === 'student' && ! auth()->user()->onboarding_done)
+            @php
+                $tourSteps = collect(__('student.tour'))
+                    ->zip(['.sidebar', '.sidebar', '.stat-grid', '.dash-grid__main'])
+                    ->map(fn ($pair) => $pair[0] + ['target' => $pair[1]]);
+            @endphp
+
+            <script type="application/json" id="tour-data"
+                    data-url="{{ route('student.onboarding.done') }}"
+                    data-labels="{{ json_encode([
+                        'skip' => __('student.tour_skip'),
+                        'next' => __('student.tour_next'),
+                        'done' => __('student.tour_done'),
+                    ], JSON_UNESCAPED_UNICODE) }}">{!! $tourSteps->toJson(JSON_UNESCAPED_UNICODE) !!}</script>
+        @endif
+    @endauth
 </body>
 </html>

@@ -7,4 +7,6 @@ return [
     'team_invite_declined' => 'رفض :name الدعوة',
     'team_removed' => 'تمت إزالة :name من الفريق',
     'proposal_submitted' => 'تم تقديم المقترح ":title"',
+    'github_updated' => 'تم تحديث رابط GitHub',
+    'submission_uploaded' => 'تم رفع ":title" كإصدار v:version',
 ];

@@ -10,7 +10,15 @@ use App\Http\Controllers\Public\LocaleController;
 use App\Http\Controllers\Shared\ThemeController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\IdeaBankController;
+use App\Http\Controllers\Student\InquiryController;
+use App\Http\Controllers\Student\MeetingController;
+use App\Http\Controllers\Student\NotificationController as StudentNotificationController;
+use App\Http\Controllers\Student\ProfileController as StudentProfileController;
+use App\Http\Controllers\Student\ProjectController as StudentProjectController;
 use App\Http\Controllers\Student\ProposalController;
+use App\Http\Controllers\Student\SubmissionController;
+use App\Http\Controllers\Student\TaskController;
+use App\Http\Controllers\Student\TeamChatController;
 use App\Http\Controllers\Student\TeamController;
 use Illuminate\Support\Facades\Route;
 
@@ -78,10 +86,37 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
         Route::post('/proposal/check-similarity', [ProposalController::class, 'checkSimilarity'])->name('proposal.check');
         Route::post('/proposal', [ProposalController::class, 'store'])->name('proposal.store');
 
-        // Batch B of step 04 fills these in
-        Route::view('/project', 'shared.dashboard-placeholder')->name('project');
-        Route::view('/submissions', 'shared.dashboard-placeholder')->name('submissions');
-        Route::view('/meetings', 'shared.dashboard-placeholder')->name('meetings');
+        Route::get('/project', [StudentProjectController::class, 'show'])->name('project');
+        Route::put('/project/github', [StudentProjectController::class, 'updateGithub'])->name('project.github');
+
+        Route::get('/submissions', [SubmissionController::class, 'index'])->name('submissions');
+        Route::post('/submissions/{submission}/upload', [SubmissionController::class, 'upload'])->name('submissions.upload');
+        Route::get('/submissions/versions/{version}/download', [SubmissionController::class, 'download'])->name('submissions.download');
+
+        Route::get('/tasks', [TaskController::class, 'index'])->name('tasks');
+        Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+        Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+        Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+        Route::post('/tasks/reorder', [TaskController::class, 'reorder'])->name('tasks.reorder');
+
+        Route::get('/team-chat', [TeamChatController::class, 'index'])->name('team-chat');
+        Route::post('/team-chat', [TeamChatController::class, 'store'])->name('team-chat.store');
+
+        Route::get('/contact-supervisor', [InquiryController::class, 'index'])->name('contact-supervisor');
+        Route::post('/contact-supervisor', [InquiryController::class, 'store'])->name('contact-supervisor.store');
+        Route::get('/attachments/{attachment}/download', [InquiryController::class, 'download'])->name('attachments.download');
+
+        Route::get('/meetings', [MeetingController::class, 'index'])->name('meetings');
+        Route::post('/meetings/request', [MeetingController::class, 'request'])->name('meetings.request');
+
+        Route::get('/notifications', [StudentNotificationController::class, 'index'])->name('notifications');
+        Route::post('/notifications/read-all', [StudentNotificationController::class, 'readAll'])->name('notifications.read-all');
+        Route::post('/notifications/{id}/read', [StudentNotificationController::class, 'read'])->name('notifications.read');
+
+        Route::get('/profile', [StudentProfileController::class, 'edit'])->name('profile');
+        Route::put('/profile', [StudentProfileController::class, 'update'])->name('profile.update');
+        Route::put('/profile/password', [StudentProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::post('/onboarding/done', [StudentProfileController::class, 'finishOnboarding'])->name('onboarding.done');
     });
 
     Route::middleware('role:supervisor')->prefix('supervisor')->name('supervisor.')->group(function () {
