@@ -39,4 +39,9 @@ class Section extends Model
     {
         return $this->hasMany(Team::class);
     }
+
+    public function defenseSessions(): HasMany
+    {
+        return $this->hasMany(DefenseSession::class);
+    }
 }

@@ -80,6 +80,20 @@ class User extends Authenticatable
         return $this->belongsToMany(ArchiveEntry::class, 'favorites')->withTimestamps();
     }
 
+    // Branches where this doctor is in the committee pool
+    public function committeeBranches(): BelongsToMany
+    {
+        return $this->belongsToMany(Branch::class, 'committee_members')->withTimestamps();
+    }
+
+    // Sessions this doctor sits on the committee of ("my assigned defenses")
+    public function assignedSessions(): BelongsToMany
+    {
+        return $this->belongsToMany(DefenseSession::class, 'session_committee')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
     public function scopeStudentsOfSection(Builder $query, int $sectionId): void
     {
         $query->where('role', 'student')->where('section_id', $sectionId);

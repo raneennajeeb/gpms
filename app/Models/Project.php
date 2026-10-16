@@ -82,9 +82,15 @@ class Project extends Model
         return $this->hasMany(Meeting::class)->orderBy('starts_at');
     }
 
-    public function defenseSchedule(): HasOne
+    // The project's slot inside a defense session, once it is scheduled
+    public function sessionProject(): HasOne
     {
-        return $this->hasOne(DefenseSchedule::class);
+        return $this->hasOne(SessionProject::class);
+    }
+
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(ProjectAttachment::class);
     }
 
     public function evaluations(): HasMany

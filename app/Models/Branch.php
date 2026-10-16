@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\HasLocalizedName;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Branch extends Model
@@ -25,5 +26,11 @@ class Branch extends Model
     public function rooms(): HasMany
     {
         return $this->hasMany(Room::class);
+    }
+
+    // The doctors available to sit on committees in this branch
+    public function committeePool(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'committee_members')->withTimestamps();
     }
 }

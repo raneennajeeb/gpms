@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Evaluation extends Model
 {
     protected $fillable = [
-        'defense_schedule_id', 'project_id', 'evaluator_id',
+        'defense_session_id', 'project_id', 'evaluator_id',
         'report_score', 'presentation_score', 'discussion_score', 'project_score',
         'final_score', 'comments', 'is_locked',
     ];
@@ -25,9 +25,9 @@ class Evaluation extends Model
         ];
     }
 
-    public function defenseSchedule(): BelongsTo
+    public function defenseSession(): BelongsTo
     {
-        return $this->belongsTo(DefenseSchedule::class);
+        return $this->belongsTo(DefenseSession::class);
     }
 
     public function project(): BelongsTo
