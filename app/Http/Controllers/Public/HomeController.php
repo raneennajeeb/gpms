@@ -29,13 +29,13 @@ class HomeController extends Controller
         $currentProjects = Project::whereHas('semester', fn ($query) => $query->where('is_current', true));
 
         $total = (clone $currentProjects)->count();
-        $finished = (clone $currentProjects)->whereIn('status', ['completed', 'defended', 'archived'])->count();
+        $finished = (clone $currentProjects)->whereIn('status', ['defended', 'archived'])->count();
 
         return [
             'archived' => ArchiveEntry::count(),
             'staff' => User::where('role', 'supervisor')->count(),
             'completion' => $total > 0 ? (int) round($finished / $total * 100) : 0,
-            'active' => (clone $currentProjects)->whereIn('status', ['approved', 'in_progress', 'awaiting_submission'])->count(),
+            'active' => (clone $currentProjects)->whereIn('status', ['approved', 'in_progress'])->count(),
         ];
     }
 }

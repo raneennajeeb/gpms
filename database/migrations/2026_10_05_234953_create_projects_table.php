@@ -18,9 +18,10 @@ return new class extends Migration
             $table->text('description');
             $table->string('category', 100)->nullable();
             $table->json('keywords');
+            // A project goes straight from in_progress to defended
             $table->enum('status', [
-                'pending_approval', 'changes_requested', 'rejected', 'approved', 'in_progress',
-                'awaiting_submission', 'completed', 'defended', 'archived',
+                'pending_approval', 'changes_requested', 'rejected', 'approved',
+                'in_progress', 'defended', 'archived',
             ])->default('pending_approval');
             $table->unsignedTinyInteger('progress_percent')->default(0);
             $table->string('github_url')->nullable();

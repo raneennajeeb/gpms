@@ -19,6 +19,7 @@ return new class extends Migration
 
             $table->string('title');
             $table->text('description');
+            $table->text('idea_summary')->nullable(); // Short summary of the project idea
             $table->unsignedSmallInteger('year');
             $table->string('supervisor_name');
             $table->date('defense_date');

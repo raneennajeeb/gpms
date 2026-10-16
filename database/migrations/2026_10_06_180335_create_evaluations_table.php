@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('evaluations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('defense_schedule_id')->constrained()->restrictOnDelete();
+            $table->foreignId('defense_session_id')->constrained()->cascadeOnDelete();
             $table->foreignId('project_id')->constrained()->restrictOnDelete();
             $table->foreignId('evaluator_id')->constrained('users')->restrictOnDelete();
 
