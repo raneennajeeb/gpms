@@ -83,6 +83,14 @@ class DemoSeeder extends Seeder
 
     private function createStaff(): void
     {
+        // System administrator: the IT department, above any one faculty
+        $this->makeUser([
+            'university_id' => '900000',
+            'name' => 'مسؤول النظام (دائرة تكنولوجيا المعلومات)',
+            'email' => 'admin@qou.edu',
+            'role' => 'admin',
+        ]);
+
         $this->coordinator = $this->makeUser([
             'university_id' => '900001',
             'name' => 'أ. سامر نصار',

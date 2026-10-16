@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['student', 'supervisor', 'coordinator'])->index();
+            $table->enum('role', ['student', 'supervisor', 'coordinator', 'admin'])->index();
 
             // Foreign keys for these four are added later, after their tables exist
             $table->unsignedBigInteger('department_id')->nullable();
