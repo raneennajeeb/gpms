@@ -27,4 +27,5 @@ return [
     // Top bar
     'notifications' => 'Notifications',
     'profile' => 'Profile',
+    'section' => 'Section',
 ];

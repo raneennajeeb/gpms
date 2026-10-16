@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initQrCode();
     initShareButton();
     initPrintButton();
+    initTagInputs();
+    initDashboardRefresh();
+    initSimilarityCheck();
     initFlashToasts();
     // Order matters: confirm forms must register before the double-submit guard
     initConfirmForms();
@@ -372,5 +375,229 @@ function initShareButton() {
 function initPrintButton() {
     document.querySelectorAll('[data-print]').forEach((button) => {
         button.addEventListener('click', () => window.print());
+    });
+}
+
+/* ---------- Tag inputs (proposal keywords and technologies) ---------- */
+
+function initTagInputs() {
+    document.querySelectorAll('[data-tag-input]').forEach((box) => {
+        if (box.hasAttribute('data-disabled')) {
+            return;
+        }
+
+        const field = box.querySelector('[data-tag-field]');
+        const tags = box.querySelector('[data-tags]');
+        const name = box.dataset.name;
+
+        const values = () => [...tags.querySelectorAll('input')].map((input) => input.value);
+
+        const addTag = (raw) => {
+            const value = raw.trim();
+
+            // No empties, no duplicates
+            if (!value || values().includes(value)) {
+                return;
+            }
+
+            const tag = document.createElement('span');
+            tag.className = 'tag-input__tag';
+
+            const label = document.createElement('span');
+            label.textContent = value; // textContent, never innerHTML
+            tag.appendChild(label);
+
+            const hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = name + '[]';
+            hidden.value = value;
+            tag.appendChild(hidden);
+
+            const remove = document.createElement('button');
+            remove.type = 'button';
+            remove.setAttribute('data-remove-tag', '');
+            remove.textContent = '×';
+            tag.appendChild(remove);
+
+            tags.appendChild(tag);
+        };
+
+        field.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ',') {
+                event.preventDefault(); // Enter must not submit the form
+                addTag(field.value);
+                field.value = '';
+            } else if (event.key === 'Backspace' && field.value === '') {
+                tags.lastElementChild?.remove();
+            }
+        });
+
+        // Picking from the datalist fires change, not keydown
+        field.addEventListener('change', () => {
+            addTag(field.value);
+            field.value = '';
+        });
+
+        box.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-remove-tag]');
+
+            if (button) {
+                button.closest('.tag-input__tag').remove();
+            }
+        });
+    });
+}
+
+/* ---------- Student dashboard: refresh without a page load ---------- */
+
+function initDashboardRefresh() {
+    document.querySelectorAll('[data-refresh]').forEach((button) => {
+        button.addEventListener('click', async () => {
+            button.disabled = true;
+
+            try {
+                const response = await fetch(button.dataset.url, {
+                    headers: { Accept: 'application/json' },
+                });
+
+                if (!response.ok) {
+                    throw new Error(response.status);
+                }
+
+                const data = await response.json();
+
+                setStat('progress', data.progress + '%');
+                setStat('status', data.status);
+                setStat('evaluation', data.evaluation);
+
+                showToast(button.dataset.done, 'success');
+            } catch (error) {
+                showToast(button.dataset.done, 'error');
+            } finally {
+                button.disabled = false;
+            }
+        });
+    });
+}
+
+function setStat(key, value) {
+    const card = document.querySelector('[data-stat="' + key + '"] .stat-card__value');
+
+    if (card && value) {
+        card.textContent = value;
+    }
+}
+
+/* ---------- Proposal similarity check ---------- */
+
+function initSimilarityCheck() {
+    const form = document.getElementById('proposal-form');
+    const button = document.getElementById('check-similarity');
+
+    if (!form || !button) {
+        return;
+    }
+
+    const card = document.getElementById('similarity-card');
+    const threshold = Number(form.dataset.threshold);
+    let lastChecked = '';
+
+    const payload = () => ({
+        title: form.querySelector('[name="title"]').value,
+        description: form.querySelector('[name="description"]').value,
+        keywords: [...form.querySelectorAll('[name="keywords[]"]')].map((input) => input.value),
+    });
+
+    const runCheck = async () => {
+        const body = payload();
+
+        const response = await fetch(form.dataset.checkUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'X-CSRF-TOKEN': form.querySelector('[name="_token"]').value,
+            },
+            body: JSON.stringify(body),
+        });
+
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
+
+        lastChecked = body.title + body.description;
+
+        return response.json();
+    };
+
+    const render = (result) => {
+        card.hidden = false;
+
+        const over = result.score >= threshold;
+
+        const ring = document.getElementById('similarity-ring');
+        ring.textContent = '';
+        const figure = document.createElement('div');
+        figure.className = 'similarity__score ' + (over ? 'tone-danger' : 'tone-success');
+        figure.textContent = result.score + '%';
+        ring.appendChild(figure);
+
+        const message = document.getElementById('similarity-message');
+        message.textContent = over ? form.dataset.warning : form.dataset.safe;
+
+        const list = document.getElementById('similarity-matches');
+        list.textContent = '';
+
+        result.matches.forEach((match) => {
+            const item = document.createElement('li');
+
+            const score = document.createElement('strong');
+            score.textContent = match.score + '%';
+            item.appendChild(score);
+
+            const title = document.createElement('span');
+            title.textContent = ' ' + match.title + (match.year ? ' (' + match.year + ')' : '');
+            item.appendChild(title);
+
+            if (match.shared.length) {
+                const shared = document.createElement('small');
+                shared.textContent = match.shared.join(' ، ');
+                item.appendChild(shared);
+            }
+
+            list.appendChild(item);
+        });
+
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+
+    button.addEventListener('click', async () => {
+        button.disabled = true;
+
+        try {
+            render(await runCheck());
+        } catch (error) {
+            showToast(form.dataset.failed, 'error');
+        } finally {
+            button.disabled = false;
+        }
+    });
+
+    // The proposal is always checked before it is finally sent
+    form.addEventListener('submit', (event) => {
+        const body = payload();
+
+        if (lastChecked === body.title + body.description) {
+            return; // already checked for this exact text
+        }
+
+        event.preventDefault();
+
+        runCheck()
+            .then(render)
+            .catch(() => {
+                lastChecked = body.title + body.description; // never block on a failed check
+            })
+            .finally(() => form.submit());
     });
 }

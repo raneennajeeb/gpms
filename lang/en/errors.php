@@ -12,4 +12,5 @@ return [
     '429_text' => 'You sent too many requests in a short time. Please wait a minute and try again.',
     '500_title' => 'Something went wrong',
     '500_text' => 'Sorry, the system ran into a problem. Please try again later, and report it if it keeps happening.',
+    'generic' => 'Something went wrong. Please try again.',
 ];

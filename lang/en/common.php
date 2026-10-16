@@ -20,4 +20,9 @@ return [
     'search_placeholder' => 'Search for a project or student...',
     'close_menu' => 'Close menu',
     'user_menu' => 'User menu',
+    'name' => 'Name',
+    'email' => 'Email',
+    'phone' => 'Phone',
+    'save' => 'Save',
+    'actions' => 'Actions',
 ];

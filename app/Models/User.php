@@ -80,6 +80,24 @@ class User extends Authenticatable
         return $this->belongsToMany(ArchiveEntry::class, 'favorites')->withTimestamps();
     }
 
+    /** The team this student actually belongs to: one accepted membership at most */
+    public function currentTeam(): ?Team
+    {
+        return $this->teamMemberships()
+            ->where('status', 'accepted')
+            ->with('team.project')
+            ->first()?->team;
+    }
+
+    /** Invitations still waiting for an answer and not past their expiry date */
+    public function pendingInvitations(): HasMany
+    {
+        return $this->teamMemberships()
+            ->where('status', 'pending')
+            ->where('expires_at', '>', now())
+            ->with(['team.section', 'team.leader']);
+    }
+
     // Branches where this doctor is in the committee pool
     public function committeeBranches(): BelongsToMany
     {

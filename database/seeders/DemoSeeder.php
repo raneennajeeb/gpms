@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\ActivityLog;
 use App\Models\Branch;
 use App\Models\DefenseSession;
+use App\Models\Idea;
 use App\Models\Department;
 use App\Models\Project;
 use App\Models\Section;
@@ -48,6 +49,7 @@ class DemoSeeder extends Seeder
         $this->createStaff();
         $this->createSectionsAndStudents();
         $this->createTechnologies();
+        $this->createIdeasAndPendingInvite();
         $this->createDemoProject();
         $this->createRooms();
         $this->createMeetingsAndDefense();
@@ -108,12 +110,22 @@ class DemoSeeder extends Seeder
             ['900105', 'د. يوسف عمرو', 'yousef.amro@qou.edu'],
         ];
 
-        foreach ($supervisors as [$id, $name, $email]) {
+        $officeHours = [
+            'الأحد والثلاثاء 10:00 - 12:00',
+            'الاثنين والأربعاء 09:00 - 11:00',
+            'الثلاثاء 12:00 - 14:00',
+            null, // not every doctor publishes them
+            'السبت 09:00 - 11:00',
+        ];
+
+        foreach ($supervisors as $index => [$id, $name, $email]) {
             $this->supervisors[] = $this->makeUser([
                 'university_id' => $id,
                 'name' => $name,
                 'email' => $email,
                 'role' => 'supervisor',
+                'phone' => '0599' . str_pad((string) (100000 + $index), 6, '0', STR_PAD_LEFT),
+                'office_hours' => $officeHours[$index] ?? null,
             ]);
         }
 
@@ -207,6 +219,64 @@ class DemoSeeder extends Seeder
         foreach ($names as $name) {
             $this->technologies[$name] = Technology::create(['name' => $name]);
         }
+    }
+
+    /** An idea bank to browse, and one invitation still waiting for an answer */
+    private function createIdeasAndPendingInvite(): void
+    {
+        $hamza = $this->supervisors[0];
+
+        $ideas = [
+            ['نظام حجز مختبرات الحاسوب', 'نظام يتيح للطلبة حجز أجهزة المختبر في أوقات محددة، مع لوحة للمشرف لمتابعة الحجوزات ومنع التعارض.', ['Laravel', 'MySQL', 'JavaScript']],
+            ['تطبيق إرشاد أكاديمي ذكي', 'تطبيق موبايل يقترح على الطالب المساقات المناسبة بناءً على خطته الدراسية وعلاماته السابقة.', ['Flutter', 'Firebase']],
+            ['منصة متابعة التدريب الميداني', 'منصة تربط الطالب بجهة التدريب والمشرف الأكاديمي، وتوثق ساعات التدريب والتقارير الأسبوعية.', ['Laravel', 'Bootstrap']],
+        ];
+
+        foreach ($ideas as [$title, $description, $technologies]) {
+            Idea::create([
+                'supervisor_id' => $hamza->id,
+                'title' => $title,
+                'description' => $description,
+                'technologies' => $technologies,
+                'status' => 'available',
+            ]);
+        }
+
+        // A second team in the same section, with an invitation still open,
+        // so the invitation flow has something to show on day one
+        $leader = User::studentsOfSection($this->sections['402']->id)
+            ->whereKeyNot([$this->ahmad->id, $this->mohammad->id])
+            ->orderBy('id')
+            ->first();
+
+        $invitee = User::studentsOfSection($this->sections['402']->id)
+            ->whereKeyNot([$this->ahmad->id, $this->mohammad->id, $leader->id])
+            ->orderBy('id')
+            ->first();
+
+        $team = Team::create([
+            'section_id' => $this->sections['402']->id,
+            'leader_id' => $leader->id,
+            'name' => 'فريق تحليل البيانات',
+            'status' => 'forming',
+        ]);
+
+        $team->members()->create([
+            'user_id' => $leader->id,
+            'status' => 'accepted',
+            'invited_at' => now()->subDays(2),
+            'expires_at' => now()->addDays(5),
+            'responded_at' => now()->subDays(2),
+        ]);
+
+        $team->members()->create([
+            'user_id' => $invitee->id,
+            'status' => 'pending',
+            'invited_at' => now()->subDays(2),
+            'expires_at' => now()->addDays(5),
+        ]);
+
+        $this->notify($invitee, 'team_invited', ['team' => $team->name]);
     }
 
     private function createDemoProject(): void

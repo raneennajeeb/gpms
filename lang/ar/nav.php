@@ -27,4 +27,5 @@ return [
     // Top bar
     'notifications' => 'الإشعارات',
     'profile' => 'الملف الشخصي',
+    'section' => 'شعبة',
 ];

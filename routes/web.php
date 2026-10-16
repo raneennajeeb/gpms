@@ -8,6 +8,10 @@ use App\Http\Controllers\Public\ArchiveController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\LocaleController;
 use App\Http\Controllers\Shared\ThemeController;
+use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
+use App\Http\Controllers\Student\IdeaBankController;
+use App\Http\Controllers\Student\ProposalController;
+use App\Http\Controllers\Student\TeamController;
 use Illuminate\Support\Facades\Route;
 
 /* ---------- Public ---------- */
@@ -58,7 +62,26 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
 
     // Each role only reaches its own area. Dashboards are temporary until steps 04-06.
     Route::middleware('role:student')->prefix('student')->name('student.')->group(function () {
-        Route::view('/dashboard', 'shared.dashboard-placeholder')->name('dashboard');
+        Route::get('/dashboard', StudentDashboardController::class)->name('dashboard');
+        Route::get('/section', [TeamController::class, 'section'])->name('section');
+
+        Route::get('/team', [TeamController::class, 'index'])->name('team');
+        Route::post('/team', [TeamController::class, 'store'])->name('team.store');
+        Route::post('/team/invite', [TeamController::class, 'invite'])->name('team.invite');
+        Route::post('/team/invitations/{member}/respond', [TeamController::class, 'respond'])->name('team.respond');
+        Route::delete('/team/members/{member}', [TeamController::class, 'destroy'])->name('team.members.destroy');
+
+        Route::get('/idea-bank', [IdeaBankController::class, 'index'])->name('idea-bank');
+        Route::post('/idea-bank/{idea}/reserve', [IdeaBankController::class, 'reserve'])->name('idea-bank.reserve');
+
+        Route::get('/proposal', [ProposalController::class, 'edit'])->name('proposal');
+        Route::post('/proposal/check-similarity', [ProposalController::class, 'checkSimilarity'])->name('proposal.check');
+        Route::post('/proposal', [ProposalController::class, 'store'])->name('proposal.store');
+
+        // Batch B of step 04 fills these in
+        Route::view('/project', 'shared.dashboard-placeholder')->name('project');
+        Route::view('/submissions', 'shared.dashboard-placeholder')->name('submissions');
+        Route::view('/meetings', 'shared.dashboard-placeholder')->name('meetings');
     });
 
     Route::middleware('role:supervisor')->prefix('supervisor')->name('supervisor.')->group(function () {
