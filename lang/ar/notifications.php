@@ -12,4 +12,13 @@ return [
     'inquiry_received' => 'استفسار جديد من :student',
     'inquiry_replied' => 'رد :supervisor على استفسارك',
     'meeting_requested' => 'طلب :student موعد اجتماع',
+    'idea_approved' => 'تم اعتماد مقترحكم ":title"',
+    'idea_changes_requested' => 'المشرف طلب تعديلات على ":title"',
+    'idea_rejected' => 'لم يُعتمد مقترحكم ":title"',
+    'submission_reviewed' => 'تمت مراجعة ":title" — :status',
+    'supervisor_note' => 'ملاحظة جديدة من المشرف على ":title"',
+    'evaluation_published' => 'تقييم المشرف: :grade',
+    'defense_changed' => 'تغيّر موعد مناقشتكم إلى :date في :room',
+    'defense_cancelled' => 'أُلغيت جلسة مناقشتكم: :reason',
+    'meeting_cancelled' => 'أُلغي اجتماع ":title": :reason',
 ];

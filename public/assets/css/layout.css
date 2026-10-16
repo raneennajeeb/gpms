@@ -1942,3 +1942,217 @@ html[data-theme="dark"] {
         display: none;
     }
 }
+
+/* ========== Supervisor ========== */
+
+/* Plain bar charts, no library */
+.bars {
+    display: grid;
+    gap: 10px;
+}
+
+.bars__row {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr) 48px;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.bars__label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.bars__track {
+    display: block;
+    height: 14px;
+    background: var(--color-bg);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+}
+
+.bars__fill {
+    display: block;
+    height: 100%;
+    min-width: 3px;
+    background: var(--color-primary);
+    border-radius: var(--radius-pill);
+}
+
+.bars__fill--success {
+    background: var(--status-success);
+}
+
+.bars__value {
+    font-size: var(--font-size-sm);
+    font-variant-numeric: tabular-nums;
+    text-align: end;
+}
+
+/* Projects that need attention */
+.attention {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.attention:last-child {
+    border-bottom: 0;
+}
+
+.attention--watch { color: var(--status-warning); }
+.attention--risk { color: var(--status-danger); }
+
+.attention__body {
+    display: grid;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.attention__body strong {
+    color: var(--color-heading);
+}
+
+.attention__body small {
+    color: var(--color-text-muted);
+}
+
+/* Proposal decisions */
+.proposal .similarity {
+    margin: var(--space-3) 0;
+}
+
+.decision {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-2);
+}
+
+.decision__form {
+    flex: 1;
+    min-width: 260px;
+}
+
+.decision__buttons {
+    display: flex;
+    gap: var(--space-1);
+}
+
+/* Submission review rows */
+.review-row {
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.review-row:last-child {
+    border-bottom: 0;
+}
+
+.review-row__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.review-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    margin-top: 8px;
+}
+
+.review-form select,
+.review-form input {
+    padding: 8px 10px;
+    font: inherit;
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.review-form input {
+    flex: 1;
+    min-width: 160px;
+}
+
+/* Committee pool */
+.pool {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px;
+}
+
+.pool__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+}
+
+.pool__item > span {
+    flex: 1;
+    min-width: 0;
+}
+
+.pool__chair {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    cursor: pointer;
+}
+
+.availability {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+}
+
+/* Inline definition lists */
+.meta-list--inline {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+/* Import preview */
+.row-error td {
+    background: var(--status-danger-bg, rgba(220, 38, 38, 0.06));
+}
+
+.row-link {
+    cursor: pointer;
+}
+
+.row-link:hover td {
+    background: var(--color-bg);
+}
+
+.form-field--switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: var(--space-2);
+}
+
+.text-success { color: var(--status-success); }
+.text-danger { color: var(--status-danger); }
+
+@media (max-width: 900px) {
+    .bars__row {
+        grid-template-columns: 110px minmax(0, 1fr) 40px;
+    }
+}

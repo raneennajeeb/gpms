@@ -15,6 +15,9 @@ class Project extends Model
         'team_id', 'supervisor_id', 'semester_id', 'idea_id',
         'title', 'description', 'category', 'keywords',
         'status', 'github_url', 'submitted_at',
+        // Written by the system, not by a form: the supervisor's decision,
+        // and the similarity figure the checker produced
+        'review_note', 'approved_by', 'approved_at', 'similarity_score',
     ];
 
     protected function casts(): array

@@ -20,6 +20,9 @@ class SettingsSeeder extends Seeder
             'weight_discussion' => '15',
             'weight_project' => '50',
             'max_upload_mb' => '20',
+            // Defense bookings: Saturday to Wednesday, 08:00 to 14:00
+            'defense_day_start' => '08:00',
+            'defense_day_end' => '14:00',
         ];
 
         foreach ($defaults as $key => $value) {

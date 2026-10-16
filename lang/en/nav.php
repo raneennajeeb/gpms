@@ -28,4 +28,8 @@ return [
     'notifications' => 'Notifications',
     'profile' => 'Profile',
     'section' => 'Section',
+    'ideas_queue' => 'Proposal queue',
+    'defense_sessions' => 'Defense sessions',
+    'meetings' => 'Meetings',
+    'inquiries' => 'Student inquiries',
 ];

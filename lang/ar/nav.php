@@ -28,4 +28,8 @@ return [
     'notifications' => 'الإشعارات',
     'profile' => 'الملف الشخصي',
     'section' => 'شعبة',
+    'ideas_queue' => 'طابور الأفكار',
+    'defense_sessions' => 'جلسات المناقشة',
+    'meetings' => 'الاجتماعات',
+    'inquiries' => 'استفسارات الطلاب',
 ];

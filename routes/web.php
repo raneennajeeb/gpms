@@ -20,6 +20,14 @@ use App\Http\Controllers\Student\SubmissionController;
 use App\Http\Controllers\Student\TaskController;
 use App\Http\Controllers\Student\TeamChatController;
 use App\Http\Controllers\Student\TeamController;
+use App\Http\Controllers\Supervisor\ArchiveController as SupervisorArchiveController;
+use App\Http\Controllers\Supervisor\DashboardController as SupervisorDashboardController;
+use App\Http\Controllers\Supervisor\DefenseSessionController;
+use App\Http\Controllers\Supervisor\IdeaBankController as SupervisorIdeaBankController;
+use App\Http\Controllers\Supervisor\IdeaQueueController;
+use App\Http\Controllers\Supervisor\MeetingController as SupervisorMeetingController;
+use App\Http\Controllers\Supervisor\ProjectReviewController;
+use App\Http\Controllers\Supervisor\StudentController as SupervisorStudentController;
 use Illuminate\Support\Facades\Route;
 
 /* ---------- Public ---------- */
@@ -120,7 +128,58 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
     });
 
     Route::middleware('role:supervisor')->prefix('supervisor')->name('supervisor.')->group(function () {
-        Route::view('/dashboard', 'shared.dashboard-placeholder')->name('dashboard');
+        Route::get('/dashboard', SupervisorDashboardController::class)->name('dashboard');
+
+        Route::get('/students', [SupervisorStudentController::class, 'index'])->name('students');
+        Route::post('/students', [SupervisorStudentController::class, 'store'])->name('students.store');
+        Route::get('/students/import', [SupervisorStudentController::class, 'importForm'])->name('students.import');
+        Route::get('/students/import/template', [SupervisorStudentController::class, 'template'])->name('students.import.template');
+        Route::post('/students/import/preview', [SupervisorStudentController::class, 'importPreview'])->name('students.import.preview');
+        Route::post('/students/import/confirm', [SupervisorStudentController::class, 'importConfirm'])->name('students.import.confirm');
+        Route::get('/students/import/passwords', [SupervisorStudentController::class, 'downloadPasswords'])->name('students.import.passwords');
+
+        Route::get('/ideas-queue', [IdeaQueueController::class, 'index'])->name('ideas-queue');
+        Route::post('/projects/{project}/approve', [IdeaQueueController::class, 'approve'])->name('projects.approve');
+        Route::post('/projects/{project}/request-changes', [IdeaQueueController::class, 'requestChanges'])->name('projects.request-changes');
+        Route::post('/projects/{project}/reject', [IdeaQueueController::class, 'reject'])->name('projects.reject');
+
+        Route::get('/idea-bank', [SupervisorIdeaBankController::class, 'index'])->name('idea-bank');
+        Route::post('/idea-bank', [SupervisorIdeaBankController::class, 'store'])->name('idea-bank.store');
+        Route::put('/idea-bank/{idea}', [SupervisorIdeaBankController::class, 'update'])->name('idea-bank.update');
+        Route::delete('/idea-bank/{idea}', [SupervisorIdeaBankController::class, 'destroy'])->name('idea-bank.destroy');
+
+        Route::get('/projects/{project}', [ProjectReviewController::class, 'show'])->name('projects.show');
+        Route::post('/projects/{project}/comments', [ProjectReviewController::class, 'comment'])->name('projects.comment');
+        Route::post('/projects/{project}/evaluation', [ProjectReviewController::class, 'evaluate'])->name('projects.evaluate');
+        Route::post('/stages/{stage}/complete', [ProjectReviewController::class, 'completeStage'])->name('stages.complete');
+        Route::post('/submissions/{submission}/review', [ProjectReviewController::class, 'reviewSubmission'])->name('submissions.review');
+        Route::get('/versions/{version}/download', [ProjectReviewController::class, 'downloadVersion'])->name('versions.download');
+        Route::get('/attachments/{attachment}/download', [ProjectReviewController::class, 'downloadAttachment'])->name('attachments.download');
+
+        Route::get('/meetings', [SupervisorMeetingController::class, 'index'])->name('meetings');
+        Route::post('/meetings', [SupervisorMeetingController::class, 'store'])->name('meetings.store');
+        Route::post('/meetings/{meeting}/confirm', [SupervisorMeetingController::class, 'confirm'])->name('meetings.confirm');
+        Route::post('/meetings/{meeting}/cancel', [SupervisorMeetingController::class, 'cancel'])->name('meetings.cancel');
+
+        Route::get('/inquiries', [SupervisorMeetingController::class, 'inquiries'])->name('inquiries');
+        Route::post('/inquiries/{inquiry}/reply', [SupervisorMeetingController::class, 'reply'])->name('inquiries.reply');
+
+        Route::get('/defense-sessions', [DefenseSessionController::class, 'index'])->name('defense-sessions');
+        Route::get('/defense-sessions/create', [DefenseSessionController::class, 'create'])->name('defense-sessions.create');
+        Route::post('/defense-sessions', [DefenseSessionController::class, 'store'])->name('defense-sessions.store');
+        Route::get('/defense-sessions/availability', [DefenseSessionController::class, 'availability'])->name('defense-sessions.availability');
+        Route::get('/defense-sessions/{session}/edit', [DefenseSessionController::class, 'edit'])->name('defense-sessions.edit');
+        Route::put('/defense-sessions/{session}', [DefenseSessionController::class, 'update'])->name('defense-sessions.update');
+        Route::delete('/defense-sessions/{session}', [DefenseSessionController::class, 'destroy'])->name('defense-sessions.destroy');
+
+        Route::get('/archive', [SupervisorArchiveController::class, 'mine'])->name('archive');
+        Route::get('/archive/create', [SupervisorArchiveController::class, 'create'])->name('archive.create');
+        Route::get('/archive/from-project/{project}', [SupervisorArchiveController::class, 'fromProject'])->name('archive.from-project');
+        Route::post('/archive', [SupervisorArchiveController::class, 'store'])->name('archive.store');
+        Route::get('/archive/{entry}/edit', [SupervisorArchiveController::class, 'edit'])->name('archive.edit');
+        Route::put('/archive/{entry}', [SupervisorArchiveController::class, 'update'])->name('archive.update');
+        Route::delete('/archive/{entry}', [SupervisorArchiveController::class, 'destroy'])->name('archive.destroy');
+        Route::post('/archive/{entry}/featured', [SupervisorArchiveController::class, 'toggleFeatured'])->name('archive.featured');
     });
 
     Route::middleware('role:coordinator')->prefix('coordinator')->name('coordinator.')->group(function () {

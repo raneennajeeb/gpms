@@ -9,4 +9,12 @@ return [
     'proposal_submitted' => 'Proposal ":title" was submitted',
     'github_updated' => 'The GitHub link was updated',
     'submission_uploaded' => '":title" was uploaded as v:version',
+    'idea_approved' => 'The proposal was approved',
+    'idea_changes_requested' => 'Changes were requested: :reason',
+    'idea_rejected' => 'The proposal was rejected: :reason',
+    'stage_approved' => 'Stage ":stage" was approved',
+    'submission_reviewed' => '":title" was reviewed — :status',
+    'defense_scheduled' => 'A defense session was booked for :date in :room',
+    'defense_changed' => 'The defense session moved to :date in :room',
+    'defense_cancelled' => 'The defense session was cancelled: :reason',
 ];

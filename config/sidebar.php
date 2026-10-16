@@ -12,9 +12,12 @@ return [
     ['key' => 'submissions', 'route' => 'student.submissions', 'icon' => 'upload', 'roles' => ['student']],
 
     // Supervisor
-    ['key' => 'projects', 'route' => 'supervisor.projects', 'icon' => 'folder', 'roles' => ['supervisor']],
+    ['key' => 'ideas_queue', 'route' => 'supervisor.ideas-queue', 'icon' => 'lightbulb', 'roles' => ['supervisor']],
     ['key' => 'students', 'route' => 'supervisor.students', 'icon' => 'graduation-cap', 'roles' => ['supervisor']],
-    ['key' => 'ideas_bank', 'route' => 'supervisor.ideas', 'icon' => 'lightbulb', 'roles' => ['supervisor']],
+    ['key' => 'ideas_bank', 'route' => 'supervisor.idea-bank', 'icon' => 'folder', 'roles' => ['supervisor']],
+    ['key' => 'defense_sessions', 'route' => 'supervisor.defense-sessions', 'icon' => 'scale', 'roles' => ['supervisor']],
+    ['key' => 'meetings', 'route' => 'supervisor.meetings', 'icon' => 'calendar', 'roles' => ['supervisor']],
+    ['key' => 'inquiries', 'route' => 'supervisor.inquiries', 'icon' => 'send', 'roles' => ['supervisor']],
     ['key' => 'archive_manage', 'route' => 'supervisor.archive', 'icon' => 'archive', 'roles' => ['supervisor']],
 
     // Coordinator

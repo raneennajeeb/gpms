@@ -12,4 +12,13 @@ return [
     'inquiry_received' => 'A new inquiry from :student',
     'inquiry_replied' => ':supervisor replied to your inquiry',
     'meeting_requested' => ':student requested a meeting',
+    'idea_approved' => 'Your proposal ":title" was approved',
+    'idea_changes_requested' => 'Your supervisor asked for changes to ":title"',
+    'idea_rejected' => 'Your proposal ":title" was not approved',
+    'submission_reviewed' => '":title" was reviewed — :status',
+    'supervisor_note' => 'A new note from your supervisor on ":title"',
+    'evaluation_published' => 'Supervisor evaluation: :grade',
+    'defense_changed' => 'Your defense moved to :date in :room',
+    'defense_cancelled' => 'Your defense session was cancelled: :reason',
+    'meeting_cancelled' => 'Meeting ":title" was cancelled: :reason',
 ];

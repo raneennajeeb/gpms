@@ -18,6 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initKanban();
     initTeamChat();
     initTour();
+    initAvailabilityCheck();
+    initSlotRows();
+    initFieldToggles();
+    initRowLinks();
     initFlashToasts();
     // Order matters: confirm forms must register before the double-submit guard
     initConfirmForms();
@@ -828,4 +832,98 @@ function initTour() {
     skip.addEventListener('click', finish);
 
     show();
+}
+
+/* ---------- Supervisor: availability, slot rows, simple toggles ---------- */
+
+function initAvailabilityCheck() {
+    const form = document.getElementById('session-form');
+    const button = document.getElementById('check-availability');
+
+    if (!form || !button) {
+        return;
+    }
+
+    const message = document.getElementById('availability-message');
+
+    button.addEventListener('click', async () => {
+        button.disabled = true;
+        message.textContent = form.dataset.checking;
+        message.className = 'text-muted';
+
+        const params = new URLSearchParams({
+            session_date: form.querySelector('[name="session_date"]').value,
+            start_time: form.querySelector('[name="start_time"]').value,
+            end_time: form.querySelector('[name="end_time"]').value,
+            room_id: form.querySelector('[name="room_id"]').value,
+        });
+
+        if (form.dataset.session) {
+            params.append('session_id', form.dataset.session);
+        }
+
+        form.querySelectorAll('[name="committee[]"]:checked')
+            .forEach((box) => params.append('committee[]', box.value));
+
+        try {
+            const response = await fetch(form.dataset.availability + '?' + params.toString(), {
+                headers: { Accept: 'application/json' },
+            });
+
+            const data = await response.json();
+
+            message.textContent = data.message;
+            message.className = data.available ? 'text-success' : 'text-danger';
+        } catch (error) {
+            message.textContent = '';
+        } finally {
+            button.disabled = false;
+        }
+    });
+}
+
+/* A project row only posts its fields when its box is ticked */
+function initSlotRows() {
+    document.querySelectorAll('[data-slot-toggle]').forEach((box) => {
+        const row = box.closest('tr');
+        const fields = row.querySelectorAll('input[name^="projects"]');
+
+        const sync = () => fields.forEach((field) => {
+            field.disabled = !box.checked;
+        });
+
+        box.addEventListener('change', sync);
+        sync();
+    });
+}
+
+/* A checkbox that shows or hides the block it names */
+function initFieldToggles() {
+    document.querySelectorAll('[data-toggle]').forEach((box) => {
+        const target = document.querySelector(box.dataset.toggle);
+
+        if (!target) {
+            return;
+        }
+
+        const sync = () => {
+            target.hidden = !box.checked;
+        };
+
+        box.addEventListener('change', sync);
+        sync();
+    });
+}
+
+/* A table row that behaves like a link, without wrapping every cell in one */
+function initRowLinks() {
+    document.querySelectorAll('.row-link').forEach((row) => {
+        row.addEventListener('click', (event) => {
+            if (event.target.closest('a, button, input, select, label')) {
+                return;
+            }
+
+            window.location.href = row.dataset.href;
+        });
+    });
 }
