@@ -6,7 +6,7 @@ class Grade
 {
     // Minimum score for each letter, highest first (university grading scale)
     private const MIN_SCORES = [
-        'A' => 85,
+        'A' => 90,
         'B' => 80,
         'C' => 70,
         'D' => 60,

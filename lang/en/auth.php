@@ -2,7 +2,7 @@
 
 return [
     // Laravel's own keys
-    'failed' => 'These credentials do not match our records.',
+    'failed' => 'Please check your university ID and password.',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
@@ -19,9 +19,6 @@ return [
     'panel_text' => 'One place to follow your graduation project, from forming a team and submitting your idea to the defense and archive.',
 
     // Login results
-    'not_registered' => 'This university ID is not registered in the system. Please contact your department.',
-    'account_disabled' => 'This account is disabled. Please contact your department.',
-    'wrong_password' => 'The password is incorrect.',
 
     'logout' => 'Log out',
 
@@ -42,9 +39,9 @@ return [
     'password_changed' => 'Your password has been changed.',
     // Forgot / reset password
     'forgot_title' => 'Forgot your password',
-    'forgot_subtitle' => 'Enter your university ID and we will send a reset link to your university email.',
+    'forgot_subtitle' => 'Enter your university ID and we will send a reset link to your email.',
     'send_link' => 'Send reset link',
-    'reset_link_sent' => 'If this ID is registered, a reset link has been sent to your university email.',
+    'reset_link_sent' => 'If this ID is registered, a reset link has been sent to your email.',
     'back_to_login' => 'Back to log in',
     'reset_title' => 'Reset your password',
     'reset_subtitle' => 'Choose a new password for your account.',

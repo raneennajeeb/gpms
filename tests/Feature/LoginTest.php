@@ -34,11 +34,11 @@ class LoginTest extends TestCase
         ]);
 
         $response->assertRedirect('/login');
-        $response->assertSessionHasErrors('password');
+        $response->assertSessionHasErrors(['university_id' => __('auth.failed')]);
         $this->assertGuest();
     }
 
-    public function test_unregistered_university_id_shows_not_registered_message(): void
+    public function test_unregistered_university_id_shows_the_same_message(): void
     {
         $response = $this->from('/login')->post('/login', [
             'university_id' => '99999999',
@@ -46,7 +46,44 @@ class LoginTest extends TestCase
         ]);
 
         $response->assertRedirect('/login');
-        $response->assertSessionHas('login_alert', __('auth.not_registered'));
+        // Identical to the wrong-password message, so nobody can tell which IDs exist
+        $response->assertSessionHasErrors(['university_id' => __('auth.failed')]);
+        $this->assertGuest();
+    }
+
+    public function test_a_disabled_account_shows_the_same_message(): void
+    {
+        User::factory()->create(['university_id' => '12345678', 'is_active' => false]);
+
+        $response = $this->from('/login')->post('/login', [
+            'university_id' => '12345678',
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect('/login');
+        $response->assertSessionHasErrors(['university_id' => __('auth.failed')]);
+        $this->assertGuest();
+    }
+
+    public function test_login_is_throttled_after_five_failed_attempts(): void
+    {
+        User::factory()->create(['university_id' => '12345678']);
+
+        foreach (range(1, 5) as $ignored) {
+            $this->from('/login')->post('/login', [
+                'university_id' => '12345678',
+                'password' => 'wrong-password',
+            ]);
+        }
+
+        // The sixth attempt is refused before the password is even checked
+        $response = $this->from('/login')->post('/login', [
+            'university_id' => '12345678',
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect('/login');
+        $response->assertSessionHasErrors('university_id');
         $this->assertGuest();
     }
 }

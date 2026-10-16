@@ -4,7 +4,7 @@ return [
     'excellent' => 'Excellent',
     'very_good' => 'Very Good',
     'good' => 'Good',
-    'average' => 'Average',
-    'pass' => 'Pass',
+    'average' => 'Acceptable',
+    'pass' => 'Weak',
     'fail' => 'Fail',
 ];

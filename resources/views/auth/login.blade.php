@@ -14,10 +14,6 @@
         <x-alert type="info" icon="info">{{ session('login_notice') }}</x-alert>
     @endif
 
-    @if (session('login_alert'))
-        <x-alert>{{ session('login_alert') }}</x-alert>
-    @endif
-
     <form method="POST" action="{{ route('login.store') }}" novalidate>
         @csrf
 

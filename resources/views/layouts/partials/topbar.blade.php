@@ -9,12 +9,13 @@
         <span class="visually-hidden">{{ __('common.open_menu') }}</span>
     </button>
 
-    {{-- Global search opens with Ctrl+K; the search itself is built in step 07 --}}
+    {{-- Global search is deferred: put this back when the search is built in step 07
     <button type="button" class="topbar__search" data-search-open>
         <x-icon name="search" />
         <span>{{ __('common.search_placeholder') }}</span>
         <kbd>Ctrl K</kbd>
     </button>
+    --}}
 
     <div class="topbar__actions">
         <a href="{{ Route::has('shared.notifications') ? route('shared.notifications') : '#' }}"

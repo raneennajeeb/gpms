@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\ActivityLog;
 use App\Models\Branch;
+use App\Models\DefenseSession;
 use App\Models\Department;
 use App\Models\Project;
 use App\Models\Section;
@@ -326,26 +327,52 @@ class DemoSeeder extends Seeder
             ]);
         }
 
-        $defenseStart = now()->addWeeks(3)->setTime(10, 0);
-        $defense = $this->project->defenseSchedule()->create([
-            'room_id' => $this->rooms[0]->id,
-            'starts_at' => $defenseStart,
-            'ends_at' => $defenseStart->copy()->addHour(),
-            'status' => 'scheduled',
-            'created_by' => $this->coordinator->id,
-        ]);
+        $section = $this->sections['402'];
 
-        // A supervisor never sits on the committee of their own student's project
-        $committee = User::where('role', 'supervisor')
-            ->whereKeyNot($this->project->supervisor_id)
-            ->orderByDesc('id')
-            ->take(3)
+        // The Hebron committee pool: supervisors other than the section's own,
+        // because a supervisor never sits on their own students' committee
+        $pool = User::where('role', 'supervisor')
+            ->whereKeyNot($section->supervisor_id)
+            ->orderBy('id')
+            ->take(4)
             ->get();
 
-        foreach ($committee as $index => $member) {
-            $defense->committeeMembers()->create([
-                'user_id' => $member->id,
-                'role' => ['chair', 'member', 'examiner'][$index],
+        $this->branches['hebron']->committeePool()->attach($pool->pluck('id'));
+
+        // A defense session for the section in two weeks, Saturday to Wednesday only
+        $date = now()->addDays(14);
+
+        while ($date->isThursday() || $date->isFriday()) {
+            $date->addDay();
+        }
+
+        $session = DefenseSession::create([
+            'section_id' => $section->id,
+            'supervisor_id' => $section->supervisor_id,
+            'room_id' => $this->rooms[0]->id,
+            'session_date' => $date->toDateString(),
+            'start_time' => '09:00',
+            'end_time' => '11:00',
+            'status' => 'scheduled',
+            'created_by' => $section->supervisor_id,
+        ]);
+
+        // Three of the pool sit on this session; the first one chairs it
+        foreach ($pool->take(3) as $index => $member) {
+            $session->committee()->attach($member->id, ['role' => $index === 0 ? 'chair' : 'member']);
+        }
+
+        // The section's projects, one hour each, in order
+        $projects = Project::whereHas('team', fn ($query) => $query->where('section_id', $section->id))
+            ->take(2)
+            ->get();
+
+        foreach ($projects as $index => $project) {
+            $session->sessionProjects()->create([
+                'project_id' => $project->id,
+                'position' => $index + 1,
+                'start_time' => sprintf('%02d:00', 9 + $index),
+                'end_time' => sprintf('%02d:00', 10 + $index),
             ]);
         }
     }
