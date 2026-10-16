@@ -8,14 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // The pool of doctors available to sit on a committee in each branch
         Schema::create('committee_members', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('defense_schedule_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->restrictOnDelete();
-            $table->enum('role', ['chair', 'member', 'examiner']);
+            $table->foreignId('branch_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
 
-            $table->unique(['defense_schedule_id', 'user_id']);
+            // Also gives us the committee_members(branch_id) index for free
+            $table->unique(['branch_id', 'user_id']);
         });
     }
 
