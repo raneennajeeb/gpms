@@ -5,16 +5,18 @@ namespace Database\Seeders;
 use App\Models\ActivityLog;
 use App\Models\Branch;
 use App\Models\DefenseSession;
-use App\Models\Idea;
 use App\Models\Department;
+use App\Models\Idea;
 use App\Models\Project;
 use App\Models\Section;
 use App\Models\Semester;
+use App\Models\SimilarityResult;
 use App\Models\StageTemplate;
 use App\Models\Team;
 use App\Models\Technology;
 use App\Models\User;
 use App\Support\Grade;
+use App\Support\SimilarityChecker;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -54,6 +56,7 @@ class DemoSeeder extends Seeder
         $this->createRooms();
         $this->createMeetingsAndDefense();
         $this->createStudentWorkspace();
+        $this->createPendingProposal();
         $this->createNotifications();
         $this->createActivityLog();
 
@@ -315,7 +318,9 @@ class DemoSeeder extends Seeder
             'category' => 'ذكاء اصطناعي',
             'keywords' => ['زراعة ذكية', 'ذكاء اصطناعي', 'إنترنت الأشياء', 'فلسطين'],
             'status' => 'in_progress',
-            'progress_percent' => 65, // fixed demo value agreed for the design, not calculated
+            // progress_percent is not set here: calculateProgress() works it out
+            // from the stage weights once the stages exist, so the number on
+            // screen is always the sum of what is actually finished
             'approved_by' => $hamza->id,
             'approved_at' => $approvedAt,
             'submitted_at' => Carbon::parse('2026-03-03 09:30'),
@@ -329,11 +334,12 @@ class DemoSeeder extends Seeder
             $this->technologies['Arduino']->id,
         ]);
 
-        // Copy the stage templates: first two done, development in progress, rest locked
+        // Copy the stage templates: the first three are done, the interim
+        // report is under way, the rest are locked
         foreach (StageTemplate::orderBy('sort_order')->get() as $template) {
             $status = match (true) {
-                $template->sort_order <= 2 => 'completed',
-                $template->sort_order === 3 => 'in_progress',
+                $template->sort_order <= 3 => 'completed',
+                $template->sort_order === 4 => 'in_progress',
                 default => 'locked',
             };
             $dueDate = $approvedAt->copy()->addDays($template->days_after_approval);
@@ -353,6 +359,10 @@ class DemoSeeder extends Seeder
                 'approved_at' => $isDone ? $dueDate : null,
             ]);
         }
+
+        // The figure on screen is the sum of the finished stages, never a
+        // number typed in by hand
+        $project->calculateProgress();
 
         $score = 92;
         $project->supervisorEvaluation()->create([
@@ -531,6 +541,79 @@ class DemoSeeder extends Seeder
         ]);
 
         $this->notify($this->ahmad, 'inquiry_replied', ['supervisor' => $hamza->name]);
+    }
+    /**
+     * A second team whose proposal is still waiting, so the supervisor's
+     * approval queue has something real to show on day one.
+     */
+    private function createPendingProposal(): void
+    {
+        $section = $this->sections['402'];
+
+        $members = User::studentsOfSection($section->id)
+            ->whereKeyNot([$this->ahmad->id, $this->mohammad->id])
+            ->orderByDesc('id')
+            ->take(2)
+            ->get();
+
+        $team = Team::create([
+            'section_id' => $section->id,
+            'leader_id' => $members[0]->id,
+            'name' => 'فريق المدن الذكية',
+            'status' => 'active',
+        ]);
+
+        foreach ($members as $member) {
+            $team->members()->create([
+                'user_id' => $member->id,
+                'status' => 'accepted',
+                'invited_at' => now()->subDays(10),
+                'expires_at' => now()->subDays(3),
+                'responded_at' => now()->subDays(9),
+            ]);
+        }
+
+        $project = Project::create([
+            'team_id' => $team->id,
+            'supervisor_id' => $this->supervisors[0]->id,
+            'semester_id' => $this->semester->id,
+            'title' => 'نظام ذكي لإدارة مواقف السيارات في المدن الفلسطينية',
+            'description' => 'نظام يرصد المواقف الفارغة باستخدام حساسات ويعرضها على تطبيق للسائقين. '
+                . 'يحسب النظام أقرب موقف متاح ويحجزه مؤقتاً، ويتيح الدفع الإلكتروني لرسوم الوقوف. '
+                . 'كما يوفر للبلدية لوحة إحصاءات عن أوقات الذروة ونسب الإشغال في كل منطقة.',
+            'category' => 'web',
+            'keywords' => ['مدن ذكية', 'إنترنت الأشياء', 'مواقف', 'بلديات'],
+            'status' => 'pending_approval',
+            'submitted_at' => now()->subDays(2),
+        ]);
+
+        foreach (['Laravel', 'MySQL', 'Arduino'] as $name) {
+            $project->technologies()->attach(Technology::firstOrCreate(['name' => $name])->id);
+        }
+
+        // Run the real checker, so the queue shows a genuine score
+        $check = (new SimilarityChecker($project->id))->check(
+            $project->title,
+            $project->description,
+            $project->keywords
+        );
+
+        $project->update(['similarity_score' => $check['score']]);
+
+        foreach ($check['matches'] as $match) {
+            if ($match['kind'] === 'archive') {
+                SimilarityResult::create([
+                    'project_id' => $project->id,
+                    'archive_entry_id' => $match['id'],
+                    'score' => $match['score'],
+                ]);
+            }
+        }
+
+        $this->notify($this->supervisors[0], 'proposal_submitted', [
+            'student' => $members[0]->name,
+            'title' => $project->title,
+        ]);
     }
     private function createNotifications(): void
     {
